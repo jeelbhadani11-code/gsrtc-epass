@@ -1,0 +1,4912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Pass GSRTC | Gujarat State Road Transport Corporation</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── VARIABLES ── */
+    :root {
+      --orange: #E8541A;
+      --orange-light: #FF7043;
+      --navy: #0A1628;
+      --navy-mid: #122040;
+      --blue: #1A3A6B;
+      --gold: #F5A623;
+      --white: #FFFFFF;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-400: #94A3B8;
+      --gray-600: #475569;
+      --gray-800: #1E293B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --shadow: 0 4px 20px rgba(0, 0, 0, .12);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, .2);
+      --radius: 14px;
+      --radius-sm: 9px;
+      --transition: .25s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background: var(--white);
+      color: var(--gray-800)
+    }
+
+    body.dark-bg {
+      background: var(--navy);
+      color: var(--white)
+    }
+
+    body.light-bg {
+      background: var(--gray-50);
+      color: var(--gray-800)
+    }
+
+    /* ── PAGE SECTIONS (router) ── */
+    .page-section {
+      display: none
+    }
+
+    .page-section.active {
+      display: block
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 22, 40, .97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      padding: 0 1.5rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+      cursor: pointer
+    }
+
+    .nav-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem
+    }
+
+    .nav-logo-text span:first-child {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 1px
+    }
+
+    .nav-logo-text span:last-child {
+      font-size: .68rem;
+      color: var(--gray-400)
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: .2rem
+    }
+
+    .nav-links a,
+    .nav-links button {
+      color: rgba(255, 255, 255, .75);
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 500;
+      padding: .5rem .9rem;
+      border-radius: 8px;
+      transition: all var(--transition);
+      white-space: nowrap;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .nav-links a:hover,
+    .nav-links button:hover {
+      color: var(--white);
+      background: rgba(255, 255, 255, .08)
+    }
+
+    .nav-cta {
+      background: var(--orange) !important;
+      color: var(--white) !important;
+      padding: .5rem 1.2rem !important;
+      border-radius: 8px !important
+    }
+
+    .nav-cta:hover {
+      background: var(--orange-light) !important;
+      transform: translateY(-1px)
+    }
+
+    .nav-admin-pill {
+      background: rgba(255, 255, 255, .08) !important;
+      border: 1px solid rgba(255, 255, 255, .15) !important
+    }
+
+    .nav-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: .35rem .9rem;
+      border-radius: 100px;
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .nav-user-badge span {
+      color: var(--orange);
+      font-weight: 700
+    }
+
+    .nav-logout {
+      background: rgba(239, 68, 68, .1) !important;
+      color: var(--danger) !important;
+      border: 1px solid rgba(239, 68, 68, .2) !important
+    }
+
+    .nav-logout:hover {
+      background: rgba(239, 68, 68, .2) !important
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 1010
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all var(--transition)
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg)
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0)
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg)
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: rgba(10, 22, 40, .99);
+      backdrop-filter: blur(20px);
+      padding: 1.2rem 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      flex-direction: column;
+      gap: .4rem
+    }
+
+    .mobile-nav.open {
+      display: flex;
+      animation: slideDown .25s ease
+    }
+
+    .mobile-nav button,
+    .mobile-nav a {
+      color: rgba(255, 255, 255, .8);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: .75rem 1rem;
+      border-radius: 10px;
+      transition: all var(--transition);
+      border: none;
+      border-left: 3px solid transparent;
+      background: none;
+      cursor: pointer;
+      font-family: 'Noto Sans', sans-serif;
+      text-align: left;
+      width: 100%
+    }
+
+    .mobile-nav button:hover,
+    .mobile-nav a:hover {
+      background: rgba(255, 255, 255, .06);
+      border-left-color: var(--orange);
+      color: var(--white)
+    }
+
+    .mobile-cta {
+      background: var(--orange) !important;
+      color: var(--white) !important;
+      text-align: center !important;
+      border-left-color: transparent !important;
+      border-radius: 10px !important;
+      margin-top: .5rem
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: .75rem 1.7rem;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all var(--transition);
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white)
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(232, 84, 26, .45)
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, .22)
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, .08);
+      transform: translateY(-1px)
+    }
+
+    .btn-outline-dark {
+      background: transparent;
+      color: var(--gray-800);
+      border: 1px solid var(--gray-300)
+    }
+
+    .btn-sm {
+      padding: .42rem 1rem;
+      font-size: .8rem
+    }
+
+    .btn-full {
+      width: 100%
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--navy)
+    }
+
+    .btn-gold:hover {
+      background: #f0b429;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(245, 166, 35, .4)
+    }
+
+    .btn-danger-soft {
+      background: rgba(239, 68, 68, .1);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, .2)
+    }
+
+    .btn-danger-soft:hover {
+      background: var(--danger);
+      color: white
+    }
+
+    /* ── FORM COMMON (dark) ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      margin-bottom: 1rem
+    }
+
+    .form-group.no-mb {
+      margin-bottom: 0
+    }
+
+    .form-group label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .6);
+      letter-spacing: .3px
+    }
+
+    .req {
+      color: var(--orange);
+      font-size: .7rem
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center
+    }
+
+    .input-ico {
+      position: absolute;
+      left: 12px;
+      font-size: .95rem;
+      pointer-events: none;
+      opacity: .5;
+      z-index: 2
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      color: var(--white);
+      padding: .7rem 2.5rem .7rem 2.6rem;
+      border-radius: var(--radius-sm);
+      font-size: .88rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition)
+    }
+
+    .form-group input.no-ico,
+    .form-group select.no-ico {
+      padding-left: 1rem !important
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--orange);
+      background: rgba(255, 255, 255, .1);
+      box-shadow: 0 0 0 3px rgba(232, 84, 26, .15)
+    }
+
+    .form-group input.valid {
+      border-color: var(--success)
+    }
+
+    .form-group input.error {
+      border-color: var(--danger)
+    }
+
+    .form-group input.valid:focus {
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .15)
+    }
+
+    .form-group input.error:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .15)
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255, 255, 255, .28)
+    }
+
+    .form-group select {
+      padding-left: 1rem;
+      appearance: none;
+      cursor: pointer
+    }
+
+    .form-group select option {
+      background: var(--navy-mid)
+    }
+
+    .field-msg {
+      font-size: .72rem;
+      margin-top: 2px;
+      display: none;
+      color: #f87171
+    }
+
+    .field-msg.show {
+      display: block
+    }
+
+    .pwd-toggle {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .4);
+      cursor: pointer;
+      font-size: .9rem;
+      z-index: 2;
+      padding: 0;
+      transition: color var(--transition)
+    }
+
+    .pwd-toggle:hover {
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .pwd-bars {
+      display: flex;
+      gap: 4px;
+      margin: 5px 0 2px
+    }
+
+    .pwd-bar {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .1);
+      transition: background .3s
+    }
+
+    .pwd-bar.weak {
+      background: var(--danger)
+    }
+
+    .pwd-bar.medium {
+      background: var(--warning)
+    }
+
+    .pwd-bar.strong {
+      background: var(--success)
+    }
+
+    .pwd-label {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .35)
+    }
+
+    .select-wrap {
+      position: relative
+    }
+
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, .4);
+      pointer-events: none;
+      font-size: .8rem
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 700;
+      display: inline-block
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .25)
+    }
+
+    .badge-yellow {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, .25)
+    }
+
+    .badge-red {
+      background: rgba(239, 68, 68, .12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, .25)
+    }
+
+    .badge-orange {
+      background: rgba(232, 84, 26, .1);
+      color: var(--orange);
+      border: 1px solid rgba(232, 84, 26, .2)
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      background: var(--navy-mid);
+      color: var(--white);
+      padding: .9rem 1.3rem;
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--success);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
+      transform: translateX(130%);
+      transition: transform .4s cubic-bezier(.25, .8, .25, 1);
+      font-size: .86rem;
+      max-width: 300px;
+      min-width: 220px
+    }
+
+    .toast.show {
+      transform: translateX(0)
+    }
+
+    .toast-title {
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .toast.t-error {
+      border-left-color: var(--danger)
+    }
+
+    .toast.t-warn {
+      border-left-color: var(--warning)
+    }
+
+    /* ── SCROLL TOP ── */
+    .scroll-top {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      z-index: 998;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(232, 84, 26, .4);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all var(--transition)
+    }
+
+    .scroll-top.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .scroll-top:hover {
+      background: var(--orange-light);
+      transform: translateY(-2px)
+    }
+
+    /* ════════════════════════════════════
+       LANDING PAGE
+    ════════════════════════════════════ */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    @keyframes floatOrb {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-20px)
+      }
+    }
+
+    .hero {
+      min-height: 100vh;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 80px 1.5rem 2rem
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 65% 55% at 85% 50%, rgba(26, 58, 107, .7) 0%, transparent 70%), radial-gradient(ellipse 45% 45% at 10% 80%, rgba(232, 84, 26, .18) 0%, transparent 60%)
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+      background-size: 40px 40px
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite
+    }
+
+    .hero-orb-1 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(232, 84, 26, .08) 0%, transparent 70%);
+      top: 10%;
+      right: 5%
+    }
+
+    .hero-orb-2 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(245, 166, 35, .06) 0%, transparent 70%);
+      bottom: 20%;
+      left: 5%;
+      animation-delay: 3s
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232, 84, 26, .12);
+      border: 1px solid rgba(232, 84, 26, .35);
+      color: var(--orange-light);
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      margin-bottom: 1.4rem;
+      animation: fadeUp .6s ease both
+    }
+
+    .hero-badge::before {
+      content: '●';
+      font-size: .55rem;
+      animation: pulse 2s infinite
+    }
+
+    .hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      animation: fadeUp .6s .1s ease both
+    }
+
+    .hero h1 span {
+      color: var(--orange)
+    }
+
+    .hero-left p {
+      font-size: .97rem;
+      color: rgba(255, 255, 255, .62);
+      line-height: 1.75;
+      margin-bottom: 2rem;
+      animation: fadeUp .6s .2s ease both
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .3s ease both
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.8rem;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .4s ease both
+    }
+
+    .stat-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1
+    }
+
+    .stat-num span {
+      color: var(--orange)
+    }
+
+    .stat-label {
+      font-size: .72rem;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 3px
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: rgba(255, 255, 255, .1);
+      align-self: stretch
+    }
+
+    .hero-visual {
+      animation: fadeUp .7s .25s ease both
+    }
+
+    .pass-card {
+      background: linear-gradient(145deg, #1d3f72 0%, #0d1f40 100%);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 22px;
+      padding: 1.8rem;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, .55);
+      position: relative;
+      overflow: hidden
+    }
+
+    .pass-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(232, 84, 26, .12) 0%, transparent 70%)
+    }
+
+    .pass-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .pass-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .pass-logo-box {
+      width: 42px;
+      height: 42px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem
+    }
+
+    .pass-org span:first-child {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .98rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .pass-org span:last-child {
+      font-size: .68rem;
+      color: var(--gray-400)
+    }
+
+    .pass-status-badge {
+      background: rgba(16, 185, 129, .15);
+      border: 1px solid rgba(16, 185, 129, .3);
+      color: #34D399;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 700
+    }
+
+    .pass-photo-row {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .pass-photo {
+      width: 68px;
+      height: 68px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2257B5, #1A3A6B);
+      border: 2px solid rgba(255, 255, 255, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      flex-shrink: 0
+    }
+
+    .pass-name-lbl {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px
+    }
+
+    .pass-meta {
+      font-size: .73rem;
+      color: var(--gray-400);
+      line-height: 1.8
+    }
+
+    .pass-meta strong {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    .pass-divider {
+      border: none;
+      border-top: 1px dashed rgba(255, 255, 255, .1);
+      margin: 1rem 0;
+      position: relative;
+      z-index: 1
+    }
+
+    .pass-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .pass-field label {
+      display: block;
+      font-size: .65rem;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 2px
+    }
+
+    .pass-field span {
+      font-size: .82rem;
+      color: var(--white);
+      font-weight: 500
+    }
+
+    .pass-barcode {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 10px;
+      padding: .8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .barcode-visual {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      height: 36px
+    }
+
+    .barcode-visual span {
+      display: block;
+      width: 2px;
+      background: var(--white);
+      border-radius: 1px
+    }
+
+    .barcode-text {
+      font-size: .7rem;
+      color: var(--gray-400)
+    }
+
+    .pass-id-code {
+      font-family: monospace;
+      font-size: .63rem;
+      color: var(--gold)
+    }
+
+    section {
+      padding: 5rem 1.5rem
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: .7rem
+    }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.7rem, 3vw, 2.7rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: .9rem
+    }
+
+    .section-sub {
+      font-size: .97rem;
+      color: var(--gray-600);
+      max-width: 540px;
+      line-height: 1.72
+    }
+
+    .features-bg {
+      background: linear-gradient(180deg, var(--gray-50) 0%, #eef2f7 100%)
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.4rem;
+      margin-top: 3rem
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      border: 1px solid var(--gray-200);
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .1);
+      border-color: rgba(232, 84, 26, .3)
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--orange-light));
+      transform: scaleX(0);
+      transition: transform .3s;
+      transform-origin: left
+    }
+
+    .feature-card:hover::after {
+      transform: scaleX(1)
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem
+    }
+
+    .feature-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .55rem
+    }
+
+    .feature-card p {
+      font-size: .86rem;
+      color: var(--gray-600);
+      line-height: 1.65
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem 1.2rem;
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      transition: all .3s
+    }
+
+    .step:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow)
+    }
+
+    .step-num {
+      width: 52px;
+      height: 52px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(232, 84, 26, .4)
+    }
+
+    .step-icon {
+      font-size: 1.9rem;
+      margin-bottom: .8rem
+    }
+
+    .step h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .5rem
+    }
+
+    .step p {
+      font-size: .82rem;
+      color: var(--gray-600);
+      line-height: 1.6
+    }
+
+    .cta-section {
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 5rem 1.5rem
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(34, 87, 181, .3) 0%, transparent 70%)
+    }
+
+    .cta-section .container {
+      position: relative;
+      z-index: 1
+    }
+
+    .cta-section .section-title {
+      color: var(--white)
+    }
+
+    .cta-section .section-sub {
+      color: rgba(255, 255, 255, .55);
+      margin: 0 auto 2.5rem
+    }
+
+    .cta-section .section-tag {
+      color: var(--gold)
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    footer {
+      background: var(--navy);
+      color: rgba(255, 255, 255, .52);
+      padding: 3.5rem 1.5rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .footer-brand p {
+      font-size: .83rem;
+      line-height: 1.72;
+      margin-top: .8rem;
+      max-width: 290px
+    }
+
+    .footer-col h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: .9rem;
+      letter-spacing: .5px
+    }
+
+    .footer-col a,
+    .footer-col button {
+      display: block;
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .48);
+      text-decoration: none;
+      margin-bottom: 7px;
+      transition: color var(--transition);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Noto Sans', sans-serif;
+      padding: 0;
+      text-align: left
+    }
+
+    .footer-col a:hover,
+    .footer-col button:hover {
+      color: var(--orange)
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .76rem;
+      flex-wrap: wrap;
+      gap: .8rem
+    }
+
+    .viksit-badge {
+      background: rgba(245, 166, 35, .1);
+      border: 1px solid rgba(245, 166, 35, .3);
+      color: var(--gold);
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 600;
+      display: inline-block
+    }
+
+    /* ════════════════════════════════════
+       USER PORTAL
+    ════════════════════════════════════ */
+    #page-portal {
+      background: var(--navy);
+      min-height: 100vh
+    }
+
+    .portal-bg-fx {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 40%, rgba(26, 58, 107, .5) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .portal-grid-fx {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0
+    }
+
+    /* Auth card */
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 88px 1.5rem 2rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 520px;
+      backdrop-filter: blur(10px)
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+      justify-content: center
+    }
+
+    .auth-logo-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--orange);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem
+    }
+
+    .auth-logo-text span:first-child {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .auth-logo-text span:last-child {
+      font-size: .72rem;
+      color: var(--gray-400)
+    }
+
+    .auth-switcher {
+      display: flex;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 2rem;
+      gap: 4px
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: .55rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: rgba(255, 255, 255, .5);
+      transition: all var(--transition);
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .auth-tab.active {
+      background: var(--orange);
+      color: var(--white)
+    }
+
+    .auth-form {
+      display: none
+    }
+
+    .auth-form.active {
+      display: block;
+      animation: fadeUp .3s ease
+    }
+
+    .auth-form-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--white)
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: .82rem;
+      color: rgba(255, 255, 255, .4)
+    }
+
+    .auth-link button {
+      color: var(--orange);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .82rem;
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    /* Portal dashboard */
+    .portal-wrap {
+      position: relative;
+      z-index: 1;
+      padding: 88px 1.5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .portal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem
+    }
+
+    .page-tag {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .5rem
+    }
+
+    .page-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: .4rem
+    }
+
+    .page-sub {
+      font-size: .9rem;
+      color: rgba(255, 255, 255, .5);
+      line-height: 1.6
+    }
+
+    .ptabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      padding-bottom: .3rem
+    }
+
+    .ptab {
+      padding: .55rem 1.2rem;
+      border-radius: var(--radius-sm);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .6);
+      transition: all var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .ptab.active {
+      background: var(--orange);
+      color: var(--white);
+      border-color: var(--orange)
+    }
+
+    .ptab:hover:not(.active) {
+      background: rgba(255, 255, 255, .1);
+      color: var(--white)
+    }
+
+    .ptab-panel {
+      display: none
+    }
+
+    .ptab-panel.active {
+      display: block;
+      animation: fadeUp .3s ease
+    }
+
+    /* Apply layout */
+    .apply-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+      align-items: start
+    }
+
+    .apply-form-box {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--radius);
+      padding: 1.8rem
+    }
+
+    .card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1.4rem
+    }
+
+    .upload-box {
+      border: 2px dashed rgba(255, 255, 255, .18);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition)
+    }
+
+    .upload-box:hover {
+      border-color: var(--orange);
+      background: rgba(232, 84, 26, .06)
+    }
+
+    .upload-box p {
+      font-size: .83rem;
+      color: rgba(255, 255, 255, .45)
+    }
+
+    .upload-box strong {
+      color: var(--orange)
+    }
+
+    /* Live preview */
+    .preview-panel {
+      position: sticky;
+      top: 88px
+    }
+
+    .preview-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .38);
+      margin-bottom: .8rem;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .preview-label::before {
+      content: '';
+      display: block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 2s infinite
+    }
+
+    .mini-pass {
+      background: linear-gradient(145deg, #1d3f72 0%, #0d1f40 100%);
+      border-radius: 18px;
+      padding: 1.4rem;
+      border: 1px solid rgba(255, 255, 255, .1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .4);
+      position: relative;
+      overflow: hidden
+    }
+
+    .mini-pass::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(232, 84, 26, .12) 0%, transparent 70%)
+    }
+
+    .mp-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .mp-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .mp-ico {
+      width: 32px;
+      height: 32px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem
+    }
+
+    .mp-org {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .mp-pending {
+      background: rgba(245, 158, 11, .15);
+      border: 1px solid rgba(245, 158, 11, .3);
+      color: #fbbf24;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: .6rem;
+      font-weight: 700
+    }
+
+    .mp-body {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .mp-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2257B5, #1A3A6B);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(255, 255, 255, .1)
+    }
+
+    .mp-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+      min-height: 1.2em
+    }
+
+    .mp-type {
+      font-size: .68rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 2px
+    }
+
+    .mp-id {
+      font-family: monospace;
+      font-size: .62rem;
+      color: rgba(255, 255, 255, .35)
+    }
+
+    .mp-divider {
+      border: none;
+      border-top: 1px dashed rgba(255, 255, 255, .1);
+      margin: .8rem 0;
+      position: relative;
+      z-index: 1
+    }
+
+    .mp-route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: .8rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .mp-route .lbl {
+      font-size: .6rem;
+      color: rgba(255, 255, 255, .35);
+      font-weight: 400;
+      display: block;
+      margin-bottom: 1px
+    }
+
+    .mp-arrow {
+      color: var(--orange);
+      font-size: 1rem
+    }
+
+    .mp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      margin-bottom: .8rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .mp-field label {
+      display: block;
+      font-size: .58rem;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 1px
+    }
+
+    .mp-field span {
+      font-size: .72rem;
+      color: var(--white);
+      font-weight: 500
+    }
+
+    .empty-v {
+      color: rgba(255, 255, 255, .22) !important;
+      font-style: italic
+    }
+
+    .mp-barcode {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 8px;
+      padding: .65rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .bc {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      height: 26px
+    }
+
+    .bc span {
+      display: block;
+      width: 2px;
+      background: rgba(255, 255, 255, .7);
+      border-radius: 1px
+    }
+
+    .preview-hint {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .28);
+      text-align: center;
+      margin-top: .7rem
+    }
+
+    /* My Applications */
+    .apps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem
+    }
+
+    .app-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      transition: all .25s
+    }
+
+    .app-card:hover {
+      border-color: rgba(255, 255, 255, .15);
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .app-card-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: .8rem;
+      flex-wrap: wrap;
+      gap: .5rem
+    }
+
+    .app-id {
+      font-family: monospace;
+      font-size: .8rem;
+      color: var(--gold);
+      letter-spacing: .5px
+    }
+
+    .app-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: .3rem
+    }
+
+    .app-meta {
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .5);
+      line-height: 1.7
+    }
+
+    .app-meta strong {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    .app-route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 100px;
+      padding: .3rem .8rem;
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .8);
+      font-weight: 600
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: rgba(255, 255, 255, .3)
+    }
+
+    .empty-state .ei {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: .5
+    }
+
+    /* Track */
+    .track-box {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--radius);
+      padding: 2rem
+    }
+
+    .track-search {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap
+    }
+
+    .track-search input {
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      color: var(--white);
+      padding: .7rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      outline: none;
+      transition: border-color var(--transition);
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .track-search input:focus {
+      border-color: var(--orange)
+    }
+
+    .track-search input::placeholder {
+      color: rgba(255, 255, 255, .28)
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem
+    }
+
+    .tl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem
+    }
+
+    .tl-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 700;
+      flex-shrink: 0
+    }
+
+    .tl-dot.done {
+      background: rgba(16, 185, 129, .2);
+      color: var(--success);
+      border: 1.5px solid rgba(16, 185, 129, .4)
+    }
+
+    .tl-dot.prog {
+      background: rgba(245, 158, 11, .2);
+      color: var(--warning);
+      border: 1.5px solid rgba(245, 158, 11, .4);
+      animation: pulse 2s infinite
+    }
+
+    .tl-dot.pend {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px dashed rgba(255, 255, 255, .15)
+    }
+
+    .tl-dot.rej {
+      background: rgba(239, 68, 68, .2);
+      color: var(--danger);
+      border: 1.5px solid rgba(239, 68, 68, .4)
+    }
+
+    .tl-title {
+      font-size: .88rem;
+      color: var(--white);
+      font-weight: 500
+    }
+
+    .tl-time {
+      font-size: .73rem;
+      color: rgba(255, 255, 255, .38);
+      margin-top: 2px
+    }
+
+    /* Digital pass download */
+    .digital-pass {
+      background: linear-gradient(145deg, #1d3f72 0%, #0d1f40 100%);
+      border-radius: 20px;
+      padding: 1.8rem;
+      border: 1px solid rgba(255, 255, 255, .1);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, .5);
+      max-width: 430px;
+      margin: 0 auto
+    }
+
+    .dp-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.4rem
+    }
+
+    .dp-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .dp-logo-box {
+      width: 38px;
+      height: 38px;
+      background: var(--orange);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem
+    }
+
+    .dp-logo-txt span:first-child {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .dp-logo-txt span:last-child {
+      font-size: .65rem;
+      color: var(--gray-400)
+    }
+
+    .dp-valid {
+      background: rgba(16, 185, 129, .15);
+      border: 1px solid rgba(16, 185, 129, .3);
+      color: #34D399;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 700
+    }
+
+    .dp-body {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem
+    }
+
+    .dp-photo {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2257B5, #1A3A6B);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      flex-shrink: 0
+    }
+
+    .dp-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .dp-type {
+      font-size: .72rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .dp-info-txt {
+      font-size: .75rem;
+      color: rgba(255, 255, 255, .55);
+      line-height: 1.8;
+      margin-top: 6px
+    }
+
+    .dp-info-txt strong {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    .dp-divider {
+      border: none;
+      border-top: 1px dashed rgba(255, 255, 255, .1);
+      margin: 1rem 0
+    }
+
+    .dp-route {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin-bottom: 1.2rem
+    }
+
+    .dp-city {
+      font-size: .88rem;
+      color: var(--white);
+      font-weight: 600
+    }
+
+    .dp-arr {
+      color: var(--orange);
+      font-size: 1.2rem
+    }
+
+    .dp-qr-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255, 255, 255, .05);
+      border-radius: 10px;
+      padding: .8rem;
+      margin-bottom: 1.2rem
+    }
+
+    .qr-box {
+      width: 54px;
+      height: 54px;
+      background: white;
+      border-radius: 6px;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      flex-shrink: 0
+    }
+
+    .qr-box span {
+      background: #222;
+      border-radius: 1px
+    }
+
+    .qr-box span.w {
+      background: white
+    }
+
+    .qr-info p {
+      font-size: .68rem;
+      color: var(--gray-400);
+      margin-bottom: 4px
+    }
+
+    .qr-info code {
+      font-size: .73rem;
+      color: var(--gold);
+      letter-spacing: 1px
+    }
+
+    /* ════════════════════════════════════
+       ADMIN PANEL
+    ════════════════════════════════════ */
+    #page-admin {
+      min-height: 100vh
+    }
+
+    .admin-login-bg {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 88px 1.5rem 2rem;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden
+    }
+
+    .admin-login-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 40%, rgba(26, 58, 107, .55) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .admin-login-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+      background-size: 40px 40px
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(10px)
+    }
+
+    .login-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      text-align: center
+    }
+
+    .login-ico {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-light));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      box-shadow: 0 8px 24px rgba(232, 84, 26, .4)
+    }
+
+    .login-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .login-sub {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .4)
+    }
+
+    .restricted-pill {
+      background: rgba(232, 84, 26, .12);
+      border: 1px solid rgba(232, 84, 26, .3);
+      color: var(--orange);
+      padding: 3px 12px;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 1.5rem
+    }
+
+    .admin-form input {
+      width: 100%;
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      color: var(--white);
+      padding: .7rem 2.5rem .7rem 2.6rem;
+      border-radius: var(--radius-sm);
+      font-size: .88rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition)
+    }
+
+    .admin-form input:focus {
+      border-color: var(--orange);
+      background: rgba(255, 255, 255, .1);
+      box-shadow: 0 0 0 3px rgba(232, 84, 26, .15)
+    }
+
+    .admin-form input::placeholder {
+      color: rgba(255, 255, 255, .28)
+    }
+
+    .admin-form input.error {
+      border-color: var(--danger)
+    }
+
+    .admin-form .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      margin-bottom: 1rem
+    }
+
+    .admin-form .form-group label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .6)
+    }
+
+    .admin-hint {
+      margin-top: 1.5rem;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .45);
+      text-align: center
+    }
+
+    .admin-hint strong {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    /* Dashboard body */
+    .dash-wrap {
+      background: var(--gray-50);
+      min-height: 100vh
+    }
+
+    .dash-header {
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      padding: 1.4rem 1.5rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .dash-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(26, 58, 107, .5) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .dash-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem
+    }
+
+    .dash-title-grp {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .dash-ico {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-light));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem
+    }
+
+    .dash-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white)
+    }
+
+    .dash-sub {
+      font-size: .75rem;
+      color: rgba(255, 255, 255, .45);
+      margin-top: 2px
+    }
+
+    .dash-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 1.5rem
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: all .3s
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow)
+    }
+
+    .stat-card-ico {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0
+    }
+
+    .stat-card-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1
+    }
+
+    .stat-card-label {
+      font-size: .78rem;
+      color: var(--gray-600);
+      margin-top: 2px
+    }
+
+    .stat-card-change {
+      font-size: .72rem;
+      font-weight: 600;
+      margin-top: 5px
+    }
+
+    .up {
+      color: var(--success)
+    }
+
+    .down {
+      color: var(--danger)
+    }
+
+    .dtabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap
+    }
+
+    .dtab {
+      padding: .5rem 1.1rem;
+      border-radius: var(--radius-sm);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-600);
+      transition: all var(--transition);
+      white-space: nowrap;
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .dtab.active {
+      background: var(--orange);
+      color: var(--white);
+      border-color: var(--orange)
+    }
+
+    .dtab:hover:not(.active) {
+      background: var(--gray-200)
+    }
+
+    .dtab-panel {
+      display: none
+    }
+
+    .dtab-panel.active {
+      display: block;
+      animation: fadeUp .3s ease
+    }
+
+    .panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 1.4rem
+    }
+
+    .panel-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem
+    }
+
+    .content-grid-2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 1.4rem;
+      margin-bottom: 1.4rem
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px
+    }
+
+    th {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--gray-400);
+      font-weight: 600;
+      padding: .65rem .8rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+      background: var(--gray-50)
+    }
+
+    td {
+      font-size: .82rem;
+      padding: .75rem .8rem;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-800);
+      vertical-align: middle
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: var(--gray-50)
+    }
+
+    .act-btn {
+      padding: 4px 11px;
+      border-radius: 6px;
+      font-size: .7rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+      white-space: nowrap;
+      font-family: 'Noto Sans', sans-serif
+    }
+
+    .act-approve {
+      background: rgba(16, 185, 129, .1);
+      color: var(--success)
+    }
+
+    .act-approve:hover {
+      background: var(--success);
+      color: white
+    }
+
+    .act-reject {
+      background: rgba(239, 68, 68, .1);
+      color: var(--danger)
+    }
+
+    .act-reject:hover {
+      background: var(--danger);
+      color: white
+    }
+
+    .act-issued {
+      background: rgba(100, 116, 139, .1);
+      color: var(--gray-400);
+      cursor: default
+    }
+
+    .act-confirm-yes {
+      background: var(--success);
+      color: white;
+      animation: fadeUp .2s ease
+    }
+
+    .act-confirm-no {
+      background: var(--gray-200);
+      color: var(--gray-600);
+      animation: fadeUp .2s ease
+    }
+
+    .act-confirm-yes:hover {
+      background: #059669
+    }
+
+    .act-confirm-no:hover {
+      background: var(--gray-400);
+      color: white
+    }
+
+    .act-reject-confirm {
+      background: var(--danger);
+      color: white;
+      animation: fadeUp .2s ease
+    }
+
+    .act-reject-cancel {
+      background: var(--gray-200);
+      color: var(--gray-600);
+      animation: fadeUp .2s ease
+    }
+
+    .act-reject-confirm:hover {
+      background: #dc2626
+    }
+
+    .act-reject-cancel:hover {
+      background: var(--gray-400);
+      color: white
+    }
+
+    .reject-reason-inline {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+      animation: fadeUp .2s ease
+    }
+
+    .reject-reason-inline input {
+      padding: 4px 8px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: .72rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      width: 120px;
+      background: var(--gray-50);
+      color: var(--gray-800)
+    }
+
+    .reject-reason-inline input:focus {
+      border-color: var(--orange)
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: .85rem
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem
+    }
+
+    .bar-label {
+      font-size: .76rem;
+      color: var(--gray-600);
+      width: 90px;
+      flex-shrink: 0;
+      text-align: right
+    }
+
+    .bar-track {
+      flex: 1;
+      background: var(--gray-100);
+      border-radius: 100px;
+      height: 9px;
+      overflow: hidden
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--orange), var(--orange-light));
+      width: 0;
+      transition: width 1.5s cubic-bezier(.25, .8, .25, 1)
+    }
+
+    .bar-val {
+      font-size: .76rem;
+      font-weight: 700;
+      color: var(--navy);
+      width: 40px;
+      text-align: right
+    }
+
+    .dash-filter {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-800);
+      padding: .4rem .8rem;
+      border-radius: 8px;
+      font-size: .8rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      cursor: pointer
+    }
+
+    .dash-filter option {
+      background: var(--white)
+    }
+
+    .dash-search-light {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-800);
+      padding: .4rem .9rem;
+      border-radius: 8px;
+      font-size: .8rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none
+    }
+
+    .dash-search-dark {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12);
+      color: var(--white);
+      padding: .4rem .9rem;
+      border-radius: 8px;
+      font-size: .8rem;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none
+    }
+
+    .dash-search-dark::placeholder {
+      color: rgba(255, 255, 255, .35)
+    }
+
+    .dash-search-dark:focus,
+    .dash-search-light:focus {
+      outline: none;
+      border-color: var(--orange)
+    }
+
+    .empty-row td {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-400);
+      font-size: .85rem
+    }
+
+    .admin-badge-hd {
+      background: rgba(232, 84, 26, .15);
+      border: 1px solid rgba(232, 84, 26, .3);
+      color: var(--orange-light);
+      padding: .3rem .9rem;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 700
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:960px) {
+      .nav-links {
+        display: none
+      }
+
+      .hamburger {
+        display: flex
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 2.5rem
+      }
+
+      .hero-visual {
+        display: flex;
+        justify-content: center
+      }
+
+      .pass-card {
+        max-width: 380px;
+        width: 100%
+      }
+
+      .apply-layout {
+        grid-template-columns: 1fr
+      }
+
+      .preview-panel {
+        position: static
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .content-grid-2 {
+        grid-template-columns: 1fr
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem
+      }
+    }
+
+    @media(max-width:600px) {
+      section {
+        padding: 3.5rem 1rem
+      }
+
+      nav {
+        padding: 0 1rem
+      }
+
+      .hero {
+        padding: 80px 1rem 2rem
+      }
+
+      .hero-visual {
+        display: none
+      }
+
+      .hero-stats {
+        gap: 1.2rem
+      }
+
+      .stat-divider {
+        display: none
+      }
+
+      .hero-btns {
+        flex-direction: column
+      }
+
+      .hero-btns .btn {
+        justify-content: center
+      }
+
+      .form-row {
+        grid-template-columns: 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .stat-card {
+        flex-direction: column;
+        gap: .5rem;
+        padding: 1rem
+      }
+
+      .stat-card-ico {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem
+      }
+
+      .stat-card-num {
+        font-size: 1.5rem
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center
+      }
+
+      .cta-btns {
+        flex-direction: column;
+        align-items: center
+      }
+
+      .track-search {
+        flex-direction: column
+      }
+
+      .auth-card {
+        padding: 1.5rem
+      }
+
+      .portal-wrap {
+        padding: 78px 1rem 2rem
+      }
+
+      .dash-body {
+        padding: 1rem
+      }
+
+      .toast {
+        right: 1rem;
+        left: 1rem;
+        max-width: none;
+        min-width: auto
+      }
+
+      .ptabs {
+        flex-wrap: nowrap;
+        overflow-x: auto
+      }
+
+      .ptab {
+        font-size: .78rem;
+        padding: .5rem .9rem
+      }
+
+      .scroll-top {
+        display: none
+      }
+    }
+
+    @media(max-width:420px) {
+      .steps-row {
+        grid-template-columns: 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════ SHARED NAV ════════ -->
+  <nav>
+    <div class="nav-logo" onclick="goTo('landing')">
+      <div class="nav-logo-icon">🚌</div>
+      <div class="nav-logo-text"><span>E-PASS GSRTC</span><span>Gujarat State Road Transport</span></div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <button class="nav-cta" onclick="goTo('portal')">🎫 User Portal</button>
+      <button class="nav-admin-pill" onclick="goTo('admin')" style="padding:.5rem 1rem;border-radius:8px">🛡
+        Admin</button>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-nav" id="mobileNav">
+    <button onclick="goTo('landing');closeMenu()">🏠 Home</button>
+    <a href="#features" onclick="closeMenu()">✨ Features</a>
+    <a href="#how-it-works" onclick="closeMenu()">📋 How It Works</a>
+    <button class="mobile-cta" onclick="goTo('portal');closeMenu()">🎫 User Portal</button>
+    <button onclick="goTo('admin');closeMenu()">🛡 Admin Panel</button>
+  </div>
+
+  <!-- ════════════════════════════════════════
+     PAGE: LANDING
+════════════════════════════════════════ -->
+  <div class="page-section active" id="page-landing">
+
+    <section class="hero" id="home">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-content">
+        <div class="hero-left">
+          <div class="hero-badge">VIKSIT BHARAT 2047 INITIATIVE</div>
+          <h1>Digital Bus Pass for <span>Gujarat</span> — Anytime, Anywhere</h1>
+          <p>Apply, renew, and download your GSRTC bus pass completely online. No queues, no paperwork — just a seamless
+            digital experience for students, employees, and daily commuters across Gujarat.</p>
+          <div class="hero-btns">
+            <a class="btn btn-primary" href="javascript:void(0)" onclick="goTo('portal')">🎫 Apply for E-Pass</a>
+            <a href="#features" class="btn btn-outline">▶ See How It Works</a>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="stat-num">2.4<span>L+</span></div>
+              <div class="stat-label">Active Passes</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div>
+              <div class="stat-num">98<span>%</span></div>
+              <div class="stat-label">Approval Rate</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div>
+              <div class="stat-num">24<span>hrs</span></div>
+              <div class="stat-label">Fast Approval</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="pass-card">
+            <div class="pass-header">
+              <div class="pass-logo-group">
+                <div class="pass-logo-box">🚌</div>
+                <div class="pass-org"><span>GSRTC E-PASS</span><span>Gujarat State Road Transport</span></div>
+              </div>
+              <div class="pass-status-badge">● ACTIVE</div>
+            </div>
+            <div class="pass-photo-row">
+              <div class="pass-photo">👤</div>
+              <div>
+                <div class="pass-name-lbl">Rahul Sharma</div>
+                <div class="pass-meta"><strong>Type:</strong> Student Concession<br><strong>ID:</strong>
+                  GP-2025-08432<br><strong>Class:</strong> B.E. — Semester V</div>
+              </div>
+            </div>
+            <hr class="pass-divider">
+            <div class="pass-details">
+              <div class="pass-field"><label>From</label><span>Ahmedabad</span></div>
+              <div class="pass-field"><label>To</label><span>Gandhinagar</span></div>
+              <div class="pass-field"><label>Issued</label><span>01 Jun 2025</span></div>
+              <div class="pass-field"><label>Valid Till</label><span>31 May 2026</span></div>
+            </div>
+            <div class="pass-barcode">
+              <div class="barcode-visual"><span style="height:36px"></span><span style="height:28px"></span><span
+                  style="height:36px"></span><span style="height:22px"></span><span style="height:36px"></span><span
+                  style="height:30px"></span><span style="height:36px"></span><span style="height:18px"></span><span
+                  style="height:36px"></span><span style="height:32px"></span><span style="height:36px"></span><span
+                  style="height:24px"></span><span style="height:36px"></span><span style="height:28px"></span><span
+                  style="height:36px"></span></div>
+              <div>
+                <div class="barcode-text">Scan at boarding to verify</div>
+                <div class="pass-id-code">GP-2025-08432-STUD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-bg" id="features">
+      <div class="container">
+        <div class="section-tag">Platform Features</div>
+        <h2 class="section-title">Everything You Need, All in One Place</h2>
+        <p class="section-sub">A comprehensive digital platform built to serve lakhs of commuters across Gujarat's road
+          transport network.</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(232,84,26,.1)">📝</div>
+            <h3>Online Application</h3>
+            <p>Apply for new bus passes from home. Fill the form, upload documents, and submit — all digitally within
+              minutes.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(34,87,181,.1)">🔄</div>
+            <h3>Easy Renewal</h3>
+            <p>Renew your existing pass with just a few clicks. Your previous records are auto-populated for
+              convenience.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(16,185,129,.1)">📥</div>
+            <h3>Instant Download</h3>
+            <p>Download your approved digital pass as a PDF instantly. Print it or show on your phone for verification.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(245,158,11,.1)">📍</div>
+            <h3>Live Tracking</h3>
+            <p>Track your application status in real-time — from submission to verification, approval, and issuance.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(139,92,246,.1)">💳</div>
+            <h3>Secure Payment</h3>
+            <p>Integrated payment gateway supporting UPI, net banking, and cards for hassle-free pass fee payment.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon" style="background:rgba(236,72,153,.1)">🛡️</div>
+            <h3>Admin Dashboard</h3>
+            <p>GSRTC staff can verify, approve, or reject applications efficiently with a powerful admin panel.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="container">
+        <div class="section-tag">Step-by-Step Process</div>
+        <h2 class="section-title">Get Your E-Pass in 4 Simple Steps</h2>
+        <p class="section-sub">The entire process from registration to receiving your digital pass takes less than 24
+          hours.</p>
+        <div class="steps-row">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-icon">📋</div>
+            <h3>Register &amp; Login</h3>
+            <p>Create an account with your basic details and verify your mobile number.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-icon">📄</div>
+            <h3>Fill Application</h3>
+            <p>Choose pass type, fill route details, and upload required documents.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-icon">💰</div>
+            <h3>Pay Online</h3>
+            <p>Complete payment securely through UPI, net banking, or debit/credit card.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-icon">🎫</div>
+            <h3>Download Pass</h3>
+            <p>After approval within 24 hours, download your digital E-Pass and travel.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="section-tag">Get Started Today</div>
+        <h2 class="section-title" style="color:var(--white)">Ready to Go Digital?</h2>
+        <p class="section-sub" style="color:rgba(255,255,255,.55);margin:0 auto 2.5rem">Join thousands of Gujarat
+          commuters who have already switched to the paperless E-Pass system.</p>
+        <div class="cta-btns">
+          <a class="btn btn-primary" style="font-size:1rem;padding:.85rem 2.2rem" href="javascript:void(0)"
+            onclick="goTo('portal')">🎫 Apply for E-Pass</a>
+          <a class="btn btn-outline" style="font-size:1rem;padding:.85rem 2.2rem" href="javascript:void(0)"
+            onclick="goTo('admin')">🛡 Admin Login</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" onclick="goTo('landing')" style="display:inline-flex;margin-bottom:.5rem">
+            <div class="nav-logo-icon">🚌</div>
+            <div class="nav-logo-text"><span>E-PASS GSRTC</span><span>Gujarat State Road Transport</span></div>
+          </div>
+          <p>A digital initiative by GSRTC to bring seamless, paperless bus pass management to every citizen of Gujarat.
+          </p>
+          <div class="viksit-badge" style="margin-top:1rem">🇮🇳 Viksit Bharat 2047</div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <a href="javascript:void(0)" onclick="goTo('landing')">Home</a>
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="javascript:void(0)" onclick="goTo('portal')">Apply Now</a>
+          <a href="javascript:void(0)" onclick="goTo('admin')">Admin Login</a>
+        </div>
+        <div class="footer-col">
+          <h4>Pass Types</h4>
+          <a href="javascript:void(0)" onclick="goTo('portal')">Student Concession</a>
+          <a href="javascript:void(0)" onclick="goTo('portal')">Employee Monthly</a>
+          <a href="javascript:void(0)" onclick="goTo('portal')">Senior Citizen</a>
+          <a href="javascript:void(0)" onclick="goTo('portal')">General Monthly</a>
+          <a href="javascript:void(0)" onclick="goTo('portal')">Annual Pass</a>
+        </div>
+        <div class="footer-col">
+          <h4>Help &amp; Support</h4>
+          <a href="#">FAQ</a><a href="#">Contact GSRTC</a><a href="#">Grievance Portal</a><a href="#">Privacy
+            Policy</a><a href="#">Terms of Use</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 GSRTC E-Pass System. Developed as part of PBL-I, Silver Oak University.</span>
+        <span>🔒 Secured by Government Digital Infrastructure</span>
+      </div>
+    </footer>
+  </div><!-- end page-landing -->
+
+  <!-- ════════════════════════════════════════
+     PAGE: USER PORTAL
+════════════════════════════════════════ -->
+  <div class="page-section" id="page-portal">
+    <div class="portal-bg-fx"></div>
+    <div class="portal-grid-fx"></div>
+
+    <!-- Auth view -->
+    <div class="auth-wrap" id="authView">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="auth-logo-icon">🚌</div>
+          <div class="auth-logo-text"><span>E-PASS GSRTC</span><span>User Portal</span></div>
+        </div>
+        <div class="auth-switcher">
+          <button class="auth-tab active" onclick="switchAuthTab('login',this)">🔑 Login</button>
+          <button class="auth-tab" onclick="switchAuthTab('register',this)">📝 Register</button>
+        </div>
+        <!-- Login -->
+        <div class="auth-form active" id="auth-login">
+          <div class="auth-form-title">Welcome Back</div>
+          <div class="form-group"><label>Mobile Number <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-ico">📱</span><input type="tel" id="l-mobile"
+                placeholder="10-digit mobile number" oninput="filterMobile(this)" maxlength="10"></div><span
+              class="field-msg" id="l-mobile-msg">Enter valid 10-digit mobile number.</span>
+          </div>
+          <div class="form-group"><label>Password <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-ico">🔒</span><input type="password" id="l-pwd"
+                placeholder="Your password" onkeydown="if(event.key==='Enter')handleLogin()"><button class="pwd-toggle"
+                onclick="togglePwd('l-pwd',this)" type="button">👁</button></div><span class="field-msg"
+              id="l-pwd-msg">Password cannot be empty.</span>
+          </div>
+          <button class="btn btn-primary btn-full" style="margin-top:.5rem" onclick="handleLogin()">🔑 Login</button>
+
+          <div class="auth-link">Don't have an account? <button onclick="switchAuthTabByName('register')">Register
+              here</button></div>
+        </div>
+        <!-- Register -->
+        <div class="auth-form" id="auth-register">
+          <div class="auth-form-title">Create Account</div>
+          <div class="form-row">
+            <div class="form-group no-mb"><label>Full Name <span class="req">*</span></label>
+              <div class="input-wrap"><span class="input-ico">👤</span><input type="text" id="r-name"
+                  placeholder="Your full name" oninput="filterName(this)" onblur="validateName(this,'r-name-msg')">
+              </div><span class="field-msg" id="r-name-msg">Only letters &amp; spaces allowed.</span>
+            </div>
+            <div class="form-group no-mb"><label>Mobile <span class="req">*</span></label>
+              <div class="input-wrap"><span class="input-ico">📱</span><input type="tel" id="r-mobile"
+                  placeholder="10-digit number" oninput="filterMobile(this)"
+                  onblur="validateMobile(this,'r-mobile-msg')" maxlength="10"></div><span class="field-msg"
+                id="r-mobile-msg">Enter valid 10-digit number.</span>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:1rem"><label>Email Address <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-ico">✉️</span><input type="email" id="r-email"
+                placeholder="name@example.com" oninput="lowercaseEmail(this)"
+                onblur="validateEmail(this,'r-email-msg')"></div><span class="field-msg" id="r-email-msg">Enter a valid
+              email.</span>
+          </div>
+          <div class="form-group"><label>Aadhaar Number <span class="req">*</span></label>
+            <div class="input-wrap"><span class="input-ico">🪪</span><input type="text" id="r-aadhaar"
+                placeholder="XXXX XXXX XXXX" oninput="filterAadhaar(this)"
+                onblur="validateAadhaar(this,'r-aadhaar-msg')" maxlength="14"></div><span class="field-msg"
+              id="r-aadhaar-msg">Enter 12-digit Aadhaar number.</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group no-mb"><label>Password <span class="req">*</span></label>
+              <div class="input-wrap"><span class="input-ico">🔒</span><input type="password" id="r-pwd"
+                  placeholder="Create password" oninput="checkStrength(this)"
+                  onblur="validatePassword(this,'r-pwd-msg')"><button class="pwd-toggle"
+                  onclick="togglePwd('r-pwd',this)" type="button">👁</button></div>
+              <div id="r-pwd-bars" style="display:none">
+                <div class="pwd-bars">
+                  <div class="pwd-bar" id="pb1"></div>
+                  <div class="pwd-bar" id="pb2"></div>
+                  <div class="pwd-bar" id="pb3"></div>
+                  <div class="pwd-bar" id="pb4"></div>
+                </div>
+                <div class="pwd-label" id="pwd-lbl"></div>
+              </div><span class="field-msg" id="r-pwd-msg">Min 8 chars with letters &amp; numbers.</span>
+            </div>
+            <div class="form-group no-mb"><label>Confirm Password <span class="req">*</span></label>
+              <div class="input-wrap"><span class="input-ico">🔒</span><input type="password" id="r-cpwd"
+                  placeholder="Re-enter password" oninput="checkCpwd(this)" onblur="checkCpwd(this)"><button
+                  class="pwd-toggle" onclick="togglePwd('r-cpwd',this)" type="button">👁</button></div><span
+                class="field-msg" id="r-cpwd-msg">Passwords do not match.</span>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" style="margin-top:1.4rem" onclick="handleRegister()">✅ Create
+            Account</button>
+          <div class="auth-link">Already have an account? <button onclick="switchAuthTabByName('login')">Login
+              here</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal dashboard (after login) -->
+    <div id="portalView" style="display:none;position:relative;z-index:1">
+      <div class="portal-wrap">
+        <div class="portal-header">
+          <div>
+            <div class="page-tag">User Portal</div>
+            <div class="page-title">Welcome back, <span id="portal-username" style="color:var(--orange)">User</span>!
+            </div>
+            <div class="page-sub">Manage your GSRTC bus pass applications from one place.</div>
+          </div>
+          <button class="btn btn-danger-soft btn-sm" onclick="logoutUser()">🚪 Logout</button>
+        </div>
+        <div class="ptabs">
+          <button class="ptab active" onclick="switchPTab('apply',this)">🎫 Apply for Pass</button>
+          <button class="ptab" onclick="switchPTab('myapps',this)">📋 My Applications</button>
+          <button class="ptab" onclick="switchPTab('track',this)">📍 Track Status</button>
+          <button class="ptab" onclick="switchPTab('download',this)">📥 Download Pass</button>
+        </div>
+
+        <!-- Apply -->
+        <div class="ptab-panel active" id="ptab-apply">
+          <div class="apply-layout">
+            <div class="apply-form-box">
+              <div class="card-title">🎫 New Pass Application</div>
+              <div class="form-row">
+                <div class="form-group no-mb"><label>Applicant Name <span class="req">*</span></label>
+                  <div class="input-wrap"><span class="input-ico">👤</span><input type="text" id="ap-name"
+                      placeholder="As per Aadhaar card" oninput="filterName(this);updatePreview()"
+                      onblur="validateName(this,'ap-name-msg')"></div><span class="field-msg" id="ap-name-msg">Only
+                    letters &amp; spaces allowed.</span>
+                </div>
+                <div class="form-group no-mb"><label>Pass Type <span class="req">*</span></label>
+                  <div class="select-wrap"><select id="ap-type" class="no-ico" onchange="updatePreview()">
+                      <option value="">Select Pass Type</option>
+                      <option value="Student Concession">Student Concession Pass</option>
+                      <option value="Employee Monthly">Employee Monthly Pass</option>
+                      <option value="Senior Citizen">Senior Citizen Pass</option>
+                      <option value="General Monthly">General Monthly Pass</option>
+                    </select></div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:.8rem">
+                <div class="form-group no-mb"><label>Mobile Number <span class="req">*</span></label>
+                  <div class="input-wrap"><span class="input-ico">📱</span><input type="tel" id="ap-mobile"
+                      placeholder="10-digit number" oninput="filterMobile(this)" maxlength="10"></div>
+                </div>
+                <div class="form-group no-mb"><label>College / Organization</label>
+                  <div class="input-wrap"><span class="input-ico">🏫</span><input type="text" id="ap-college"
+                      placeholder="Institute or employer" oninput="filterName(this);updatePreview()"></div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:.8rem">
+                <div class="form-group no-mb"><label>From City / Stop <span class="req">*</span></label>
+                  <div class="input-wrap"><span class="input-ico">📍</span><input type="text" id="ap-from"
+                      placeholder="e.g. Ahmedabad" oninput="filterName(this);updatePreview()"></div>
+                </div>
+                <div class="form-group no-mb"><label>To City / Stop <span class="req">*</span></label>
+                  <div class="input-wrap"><span class="input-ico">🏁</span><input type="text" id="ap-to"
+                      placeholder="e.g. Gandhinagar" oninput="filterName(this);updatePreview()"></div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:.8rem">
+                <div class="form-group no-mb"><label>Validity <span class="req">*</span></label>
+                  <div class="select-wrap"><select id="ap-validity" class="no-ico" onchange="updatePreview()">
+                      <option value="">Select Duration</option>
+                      <option value="1 Month">1 Month — ₹200</option>
+                      <option value="3 Months">3 Months — ₹550</option>
+                      <option value="6 Months">6 Months — ₹1000</option>
+                      <option value="Annual">Annual — ₹1800</option>
+                    </select></div>
+                </div>
+                <div class="form-group no-mb"><label>Email Address</label>
+                  <div class="input-wrap"><span class="input-ico">✉️</span><input type="email" id="ap-email"
+                      placeholder="name@example.com" oninput="lowercaseEmail(this)"></div>
+                </div>
+              </div>
+              <div class="form-group" style="margin-top:.8rem">
+                <label>Upload Documents</label>
+                <div class="upload-box" onclick="document.getElementById('ap-document').click()">
+                  <div style="font-size:2rem;margin-bottom:.5rem">📁</div>
+                  <p><strong>Click to upload</strong> supporting document<br>JPG, PNG, PDF — Max 5MB</p>
+                  <p id="ap-document-name" style="margin-top:.6rem;color:var(--gold)">No document selected</p>
+                </div>
+                <input type="file" id="ap-document" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+              </div>
+              <div class="form-group" style="margin-top:.8rem">
+                <label>Applicant Photo</label>
+                <div class="upload-box" onclick="document.getElementById('ap-photo').click()">
+                  <div style="font-size:2rem;margin-bottom:.5rem">🖼️</div>
+                  <p><strong>Click to upload</strong> passport-style photo<br>JPG, PNG, WEBP — Max 5MB</p>
+                  <p id="ap-photo-name" style="margin-top:.6rem;color:var(--gold)">No photo selected</p>
+                </div>
+                <input type="file" id="ap-photo" accept=".jpg,.jpeg,.png,.webp" style="display:none">
+              </div>
+              <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap">
+                <button class="btn btn-primary" onclick="handleApply()">📨 Submit Application &amp; Pay</button>
+                <button class="btn btn-outline" onclick="clearApplyForm()">🗑 Clear Form</button>
+              </div>
+            </div>
+            <!-- Live preview -->
+            <div class="preview-panel">
+              <div class="preview-label">Live Pass Preview</div>
+              <div class="mini-pass">
+                <div class="mp-hd">
+                  <div class="mp-logo">
+                    <div class="mp-ico">🚌</div>
+                    <div class="mp-org">GSRTC E-PASS</div>
+                  </div>
+                  <div class="mp-pending">⏳ PENDING</div>
+                </div>
+                <div class="mp-body">
+                  <div class="mp-avatar">👤</div>
+                  <div>
+                    <div class="mp-name" id="prev-name"><span class="empty-v">Your Name</span></div>
+                    <div class="mp-type" id="prev-type">Pass Type</div>
+                    <div class="mp-id">GP-2025-XXXXX</div>
+                  </div>
+                </div>
+                <hr class="mp-divider">
+                <div class="mp-route">
+                  <div><span class="lbl">From</span><span id="prev-from" class="empty-v">—</span></div>
+                  <div class="mp-arrow">⟶</div>
+                  <div style="text-align:right"><span class="lbl">To</span><span id="prev-to" class="empty-v">—</span>
+                  </div>
+                </div>
+                <div class="mp-grid">
+                  <div class="mp-field"><label>College/Org</label><span id="prev-college" class="empty-v">—</span></div>
+                  <div class="mp-field"><label>Validity</label><span id="prev-validity" class="empty-v">—</span></div>
+                  <div class="mp-field"><label>Applied On</label><span id="prev-date">—</span></div>
+                  <div class="mp-field"><label>Status</label><span
+                      style="color:var(--warning);font-size:.72rem;font-weight:600">⏳ Pending</span></div>
+                </div>
+                <div class="mp-barcode">
+                  <div class="bc"><span style="height:24px"></span><span style="height:18px"></span><span
+                      style="height:24px"></span><span style="height:14px"></span><span style="height:24px"></span><span
+                      style="height:20px"></span><span style="height:24px"></span><span style="height:12px"></span><span
+                      style="height:24px"></span></div>
+                  <div style="font-size:.6rem;color:var(--gray-400)">Preview — not for boarding use</div>
+                </div>
+              </div>
+              <div class="preview-hint">✦ Updates as you fill the form</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Applications -->
+        <div class="ptab-panel" id="ptab-myapps">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--white)">My
+              Applications <span id="myapps-count" style="color:var(--orange)"></span></div>
+            <button class="btn btn-outline btn-sm" onclick="renderMyApps()">🔄 Refresh</button>
+          </div>
+          <div class="apps-list" id="myapps-list"></div>
+        </div>
+
+        <!-- Track -->
+        <div class="ptab-panel" id="ptab-track">
+          <div class="track-box">
+            <div class="track-search">
+              <input type="text" id="track-input" placeholder="Enter Application ID (e.g. GP-2025-08432)"
+                oninput="this.value=this.value.toUpperCase()">
+              <button class="btn btn-primary btn-sm" onclick="trackApplication()">🔍 Track</button>
+            </div>
+            <div id="track-result"></div>
+            <div id="track-empty" style="text-align:center;color:rgba(255,255,255,.3);padding:2rem;font-size:.88rem">
+              Enter your application ID above and click Track.</div>
+          </div>
+        </div>
+
+        <!-- Download -->
+        <div class="ptab-panel" id="ptab-download">
+          <div id="download-content"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end page-portal -->
+
+  <!-- ════════════════════════════════════════
+     PAGE: ADMIN
+════════════════════════════════════════ -->
+  <div class="page-section" id="page-admin">
+
+    <!-- Admin login -->
+    <div class="admin-login-bg" id="adminLoginView">
+      <div class="login-card">
+        <div class="login-top">
+          <div class="login-ico">🛡</div>
+          <div class="login-title">Admin Panel</div>
+          <div class="login-sub">GSRTC Staff Access Only</div>
+        </div>
+        <div style="text-align:center;margin-bottom:1.8rem">
+          <div class="restricted-pill">🔐 Restricted Access</div>
+        </div>
+        <div class="admin-form">
+          <div class="form-group"><label>Admin Username</label>
+            <div class="input-wrap"><span class="input-ico">👤</span><input type="text" id="a-user"
+                placeholder="Enter admin username" autocomplete="username"></div><span class="field-msg"
+              id="a-user-msg">Username cannot be empty.</span>
+          </div>
+          <div class="form-group"><label>Admin Password</label>
+            <div class="input-wrap"><span class="input-ico">🔒</span><input type="password" id="a-pwd"
+                placeholder="Enter admin password" onkeydown="if(event.key==='Enter')handleAdminLogin()"><button
+                class="pwd-toggle" onclick="togglePwd('a-pwd',this)" type="button">👁</button></div><span
+              class="field-msg" id="a-pwd-msg">Password cannot be empty.</span>
+          </div>
+          <button class="btn btn-primary btn-full" style="margin-top:.5rem" onclick="handleAdminLogin()">🛡 Login as
+            Admin</button>
+        </div>
+
+        <div style="text-align:center;margin-top:1.5rem;font-size:.8rem;color:rgba(255,255,255,.35)">Not an admin?
+          <button onclick="goTo('portal')"
+            style="color:var(--orange);background:none;border:none;cursor:pointer;font-weight:600;font-size:.8rem;font-family:'Noto Sans',sans-serif">Go
+            to User Portal →</button></div>
+      </div>
+    </div>
+
+    <!-- Admin dashboard -->
+    <div class="dash-wrap" id="adminDashView" style="display:none">
+      <div class="dash-header" style="padding-top:calc(68px + 1.4rem)">
+        <div class="dash-header-inner">
+          <div class="dash-title-grp">
+            <div class="dash-ico">🛡</div>
+            <div>
+              <div class="dash-title">GSRTC Admin Dashboard</div>
+              <div class="dash-sub">Manage applications, users &amp; approvals</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+            <span class="admin-badge-hd">● Admin Logged In</span>
+            <button class="btn btn-sm btn-danger-soft" onclick="adminLogout()">🚪 Logout</button>
+          </div>
+        </div>
+      </div>
+      <div class="dash-body">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="dtabs">
+          <button class="dtab active" onclick="switchDTab('apps',this)">📋 Applications</button>
+          <button class="dtab" onclick="switchDTab('users',this)">👥 Registered Users</button>
+          <button class="dtab" onclick="switchDTab('analytics',this)">📊 Analytics</button>
+        </div>
+        <!-- Applications -->
+        <div class="dtab-panel active" id="dtab-apps">
+          <div class="panel">
+            <div class="panel-title">
+              All Applications <span id="apps-count-badge" class="badge badge-orange" style="font-size:.72rem"></span>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                <input class="dash-search-light" id="apps-search" placeholder="🔍 Search name/ID…"
+                  oninput="renderAppsTable()">
+                <select class="dash-filter" id="apps-filter" onchange="renderAppsTable()">
+                  <option value="">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>App ID</th>
+                    <th>Applicant</th>
+                    <th>Type</th>
+                    <th>Route</th>
+                    <th>Validity</th>
+                    <th>Amount</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="apps-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Users -->
+        <div class="dtab-panel" id="dtab-users">
+          <div class="panel">
+            <div class="panel-title">Registered Users <span id="users-count-badge" class="badge badge-orange"
+                style="font-size:.72rem"></span><input class="dash-search-light" id="users-search"
+                placeholder="🔍 Search users…" oninput="renderUsersTable()"></div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Aadhaar</th>
+                    <th>Registered</th>
+                    <th>Applications</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Analytics -->
+        <div class="dtab-panel" id="dtab-analytics">
+          <div class="content-grid-2">
+            <div class="panel">
+              <div class="panel-title">Applications by Pass Type</div>
+              <div class="bar-chart" id="type-chart"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">Applications by Status</div>
+              <div class="bar-chart" id="status-chart"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Top Routes</div>
+            <div class="bar-chart" id="route-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end page-admin -->
+
+  <!-- Shared: toast + scroll top -->
+  <div class="toast" id="toast">
+    <div class="toast-title" id="toast-title"></div>
+    <div id="toast-msg"></div>
+  </div>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      window.location.replace('http://localhost:5050/');
+    }
+
+    const BACKEND_ORIGIN = window.location.protocol === 'file:' ? 'http://localhost:5050' : window.location.origin;
+    const API_BASE = `${BACKEND_ORIGIN}/api`;
+
+    let currentPage = 'landing';
+    let toastTimer;
+    let _accessToken = localStorage.getItem('gsrtc_access_token') || null;
+    let _refreshToken = localStorage.getItem('gsrtc_refresh_token') || null;
+    let _adminAccess = sessionStorage.getItem('gsrtc_admin_access') || null;
+    let _adminRefresh = sessionStorage.getItem('gsrtc_admin_refresh') || null;
+    let _currentUser = JSON.parse(localStorage.getItem('gsrtc_current_user') || 'null');
+    let _isAdmin = sessionStorage.getItem('gsrtc_admin_flag') === '1';
+    let passTypesCache = [];
+    let validityCache = [];
+
+    const DB = {
+      getCurrentUser() {
+        return _currentUser;
+      },
+      setCurrentUser(user) {
+        _currentUser = user;
+        localStorage.setItem('gsrtc_current_user', JSON.stringify(user));
+      },
+      clearCurrentUser() {
+        _currentUser = null;
+        _accessToken = null;
+        _refreshToken = null;
+        localStorage.removeItem('gsrtc_current_user');
+        localStorage.removeItem('gsrtc_access_token');
+        localStorage.removeItem('gsrtc_refresh_token');
+      },
+      isAdmin() {
+        return _isAdmin;
+      },
+      setAdmin() {
+        _isAdmin = true;
+        sessionStorage.setItem('gsrtc_admin_flag', '1');
+      },
+      clearAdmin() {
+        _isAdmin = false;
+        _adminAccess = null;
+        _adminRefresh = null;
+        sessionStorage.removeItem('gsrtc_admin_flag');
+        sessionStorage.removeItem('gsrtc_admin_access');
+        sessionStorage.removeItem('gsrtc_admin_refresh');
+      },
+    };
+
+    function seedData() { }
+
+    async function apiFetch(path, options = {}, isAdmin = false) {
+      const token = isAdmin ? _adminAccess : _accessToken;
+      const isFormData = options.body instanceof FormData;
+      const headers = { ...(options.headers || {}) };
+
+      if (!isFormData && !headers['Content-Type']) {
+        headers['Content-Type'] = 'application/json';
+      }
+      // Never set Content-Type for FormData — browser sets it with boundary
+      if (isFormData) {
+        delete headers['Content-Type'];
+      }
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      let response = await fetch(API_BASE + path, { ...options, headers });
+
+      if (response.status === 401) {
+        const refreshToken = isAdmin ? _adminRefresh : _refreshToken;
+        if (!refreshToken) {
+          // Session fully expired — redirect to login
+          if (isAdmin) {
+            DB.clearAdmin();
+            showToast('🔒 Session Expired', 'Admin session expired. Please log in again.', 'warn');
+            setTimeout(() => { initAdminPage(); updateNav('admin'); }, 500);
+          } else {
+            DB.clearCurrentUser();
+            showToast('🔒 Session Expired', 'Your session has expired. Please log in again.', 'warn');
+            setTimeout(() => { initPortalPage(); updateNav('portal'); }, 500);
+          }
+          return response;
+        }
+
+        const refreshPath = isAdmin ? '/admin/refresh' : '/auth/refresh';
+        const refreshResponse = await fetch(API_BASE + refreshPath, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken }),
+        });
+
+        if (!refreshResponse.ok) {
+          if (isAdmin) {
+            DB.clearAdmin();
+            showToast('🔒 Session Expired', 'Admin session expired. Please log in again.', 'warn');
+            setTimeout(() => { initAdminPage(); updateNav('admin'); }, 500);
+          } else {
+            DB.clearCurrentUser();
+            showToast('🔒 Session Expired', 'Your session has expired. Please log in again.', 'warn');
+            setTimeout(() => { initPortalPage(); updateNav('portal'); }, 500);
+          }
+          return response;
+        }
+
+        const refreshData = await safeJson(refreshResponse);
+        if (isAdmin) {
+          _adminAccess = refreshData.data.accessToken;
+          _adminRefresh = refreshData.data.refreshToken;
+          sessionStorage.setItem('gsrtc_admin_access', _adminAccess);
+          sessionStorage.setItem('gsrtc_admin_refresh', _adminRefresh);
+          headers.Authorization = `Bearer ${_adminAccess}`;
+        } else {
+          _accessToken = refreshData.data.accessToken;
+          _refreshToken = refreshData.data.refreshToken;
+          localStorage.setItem('gsrtc_access_token', _accessToken);
+          localStorage.setItem('gsrtc_refresh_token', _refreshToken);
+          headers.Authorization = `Bearer ${_accessToken}`;
+        }
+
+        // Strip Content-Type for FormData on retry
+        if (isFormData) {
+          delete headers['Content-Type'];
+        }
+
+        response = await fetch(API_BASE + path, { ...options, headers });
+      }
+
+      return response;
+    }
+
+    async function safeJson(response) {
+      try {
+        return await response.json();
+      } catch {
+        return {};
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatDate(date, withTime = false) {
+      if (!date) return '—';
+      const parsed = new Date(date);
+      if (Number.isNaN(parsed.getTime())) return '—';
+      return parsed.toLocaleString(
+        'en-IN',
+        withTime
+          ? { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+          : { day: '2-digit', month: 'short', year: 'numeric' }
+      );
+    }
+
+    function formatAmount(amount) {
+      const numeric = Number(amount || 0);
+      return `₹${numeric.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+    }
+
+    function statusBadge(status) {
+      const cls = { Approved: 'badge-green', Pending: 'badge-yellow', Rejected: 'badge-red' }[status] || 'badge-orange';
+      const icon = { Approved: '✅', Pending: '⏳', Rejected: '❌' }[status] || '•';
+      return `<span class="badge ${cls}">${icon} ${escapeHtml(status)}</span>`;
+    }
+
+    function adminBadge(status) {
+      return statusBadge(status);
+    }
+
+    function goTo(page, skipPush = false) {
+      document.querySelectorAll('.page-section').forEach((section) => section.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+      currentPage = page;
+      if (window.location.protocol !== 'file:') {
+        const nextPath = page === 'landing' ? '/' : `/${page}`;
+        if (window.location.pathname !== nextPath && !skipPush) {
+          window.history.pushState({ page }, '', nextPath);
+        }
+      }
+      window.scrollTo(0, 0);
+      updateBodyBg(page);
+      updateNav(page);
+      if (page === 'portal') initPortalPage();
+      if (page === 'admin') initAdminPage();
+      closeMenu();
+    }
+
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', (event) => {
+      const page = event.state?.page ||
+        (window.location.pathname === '/portal' ? 'portal' :
+          window.location.pathname === '/admin' ? 'admin' : 'landing');
+      goTo(page, true);
+    });
+
+    function updateBodyBg(page) {
+      document.body.classList.remove('dark-bg', 'light-bg');
+      if (page === 'portal') {
+        document.body.classList.add('dark-bg');
+        return;
+      }
+      if (page === 'admin') {
+        const dashboardVisible = DB.isAdmin() && document.getElementById('adminDashView').style.display !== 'none';
+        document.body.classList.add(dashboardVisible ? 'light-bg' : 'dark-bg');
+      }
+    }
+
+    function updateNav(page) {
+      const links = document.getElementById('navLinks');
+      const mobile = document.getElementById('mobileNav');
+      if (page === 'landing') {
+        links.innerHTML = `<a href="#features">Features</a><a href="#how-it-works">How It Works</a><button class="nav-cta" onclick="goTo('portal')">🎫 User Portal</button><button class="nav-admin-pill" onclick="goTo('admin')" style="padding:.5rem 1rem;border-radius:8px">🛡 Admin</button>`;
+        mobile.innerHTML = `<button onclick="goTo('landing');closeMenu()">🏠 Home</button><a href="#features" onclick="closeMenu()">✨ Features</a><a href="#how-it-works" onclick="closeMenu()">📋 How It Works</a><button class="mobile-cta" onclick="goTo('portal');closeMenu()">🎫 User Portal</button><button onclick="goTo('admin');closeMenu()">🛡 Admin Panel</button>`;
+        return;
+      }
+
+      if (page === 'portal') {
+        const user = DB.getCurrentUser();
+        if (user) {
+          links.innerHTML = `<div class="nav-user-badge">👤 <span>${escapeHtml(user.name.split(' ')[0])}</span></div><button onclick="goTo('landing')">🏠 Home</button><button onclick="goTo('admin')">🛡 Admin</button><button class="nav-logout" onclick="logoutUser()">🚪 Logout</button>`;
+          mobile.innerHTML = `<button onclick="goTo('landing');closeMenu()">🏠 Home</button><button onclick="goTo('admin');closeMenu()">🛡 Admin Panel</button><button onclick="logoutUser();closeMenu()">🚪 Logout</button>`;
+        } else {
+          links.innerHTML = `<button onclick="goTo('landing')">🏠 Home</button><button onclick="goTo('admin')">🛡 Admin</button>`;
+          mobile.innerHTML = `<button onclick="goTo('landing');closeMenu()">🏠 Home</button><button onclick="goTo('admin');closeMenu()">🛡 Admin Panel</button>`;
+        }
+        return;
+      }
+
+      if (DB.isAdmin()) {
+        links.innerHTML = `<span class="admin-badge-hd" style="font-size:.75rem">● Admin</span><button onclick="goTo('landing')">🏠 Home</button><button onclick="goTo('portal')">👤 User Portal</button><button class="nav-logout" onclick="adminLogout()">🚪 Logout</button>`;
+        mobile.innerHTML = `<button onclick="goTo('landing');closeMenu()">🏠 Home</button><button onclick="goTo('portal');closeMenu()">👤 User Portal</button><button onclick="adminLogout();closeMenu()">🚪 Logout</button>`;
+      } else {
+        links.innerHTML = `<button onclick="goTo('landing')">🏠 Home</button><button onclick="goTo('portal')">👤 User Portal</button>`;
+        mobile.innerHTML = `<button onclick="goTo('landing');closeMenu()">🏠 Home</button><button onclick="goTo('portal');closeMenu()">👤 User Portal</button>`;
+      }
+    }
+
+    async function initPortalPage() {
+      const user = DB.getCurrentUser();
+      if (user) {
+        document.getElementById('authView').style.display = 'none';
+        document.getElementById('portalView').style.display = 'block';
+        document.getElementById('portal-username').textContent = user.name.split(' ')[0];
+        // Pre-fill the apply form with user data
+        prefillApplyForm(user);
+        await Promise.all([renderMyApps(), renderDownloads(), loadConfig()]);
+      } else {
+        document.getElementById('authView').style.display = 'flex';
+        document.getElementById('portalView').style.display = 'none';
+      }
+      updatePreview();
+    }
+
+    function prefillApplyForm(user) {
+      if (!user) return;
+      const nameInput = document.getElementById('ap-name');
+      const mobileInput = document.getElementById('ap-mobile');
+      const emailInput = document.getElementById('ap-email');
+      if (nameInput && !nameInput.value) nameInput.value = user.name || '';
+      if (mobileInput && !mobileInput.value) mobileInput.value = user.mobile || '';
+      if (emailInput && !emailInput.value) emailInput.value = user.email || '';
+    }
+
+    function switchAuthTab(id, button) {
+      document.querySelectorAll('.auth-form').forEach((form) => form.classList.remove('active'));
+      document.querySelectorAll('.auth-tab').forEach((tab) => tab.classList.remove('active'));
+      document.getElementById(`auth-${id}`).classList.add('active');
+      button.classList.add('active');
+      // Force wipe inputs to prevent auto-fill restoring them immediately
+      setTimeout(() => {
+        ['l-mobile', 'l-pwd', 'r-name', 'r-mobile', 'r-email', 'r-aadhaar', 'r-pwd', 'r-cpwd'].forEach(fid => {
+          const el = document.getElementById(fid);
+          if (el) el.value = '';
+        });
+      }, 50);
+    }
+
+    function switchAuthTabByName(id) {
+      const tabs = document.querySelectorAll('.auth-tab');
+      switchAuthTab(id, tabs[id === 'login' ? 0 : 1]);
+    }
+
+    async function handleLogin() {
+      const mobile = document.getElementById('l-mobile').value.trim();
+      const password = document.getElementById('l-pwd').value;
+      document.getElementById('l-mobile-msg').classList.remove('show');
+      document.getElementById('l-pwd-msg').classList.remove('show');
+
+      if (!/^[6-9]\d{9}$/.test(mobile)) {
+        document.getElementById('l-mobile-msg').classList.add('show');
+        return;
+      }
+      if (!password) {
+        document.getElementById('l-pwd-msg').classList.add('show');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mobile, password }),
+        });
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('❌ Login Failed', data.message || 'Invalid credentials.', 'error');
+          return;
+        }
+
+        _accessToken = data.data.accessToken;
+        _refreshToken = data.data.refreshToken;
+        localStorage.setItem('gsrtc_access_token', _accessToken);
+        localStorage.setItem('gsrtc_refresh_token', _refreshToken);
+        DB.setCurrentUser(data.data.user);
+        showToast('✅ Login Successful', `Welcome back, ${data.data.user.name.split(' ')[0]}!`, 'success');
+        setTimeout(() => {
+          initPortalPage();
+          updateNav('portal');
+          updateBodyBg('portal');
+        }, 500);
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      }
+    }
+
+
+
+    async function handleRegister() {
+      const name = document.getElementById('r-name');
+      const mobile = document.getElementById('r-mobile');
+      const email = document.getElementById('r-email');
+      const aadhaar = document.getElementById('r-aadhaar');
+      const password = document.getElementById('r-pwd');
+      const confirmPassword = document.getElementById('r-cpwd');
+
+      validateName(name, 'r-name-msg');
+      validateMobile(mobile, 'r-mobile-msg');
+      validateEmail(email, 'r-email-msg');
+      validateAadhaar(aadhaar, 'r-aadhaar-msg');
+      validatePassword(password, 'r-pwd-msg');
+      checkCpwd(confirmPassword);
+
+      if (![name, mobile, email, aadhaar, password, confirmPassword].every((input) => input.classList.contains('valid'))) {
+        showToast('⚠️ Incomplete Form', 'Please fix the highlighted fields.', 'warn');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name.value.trim(),
+            mobile: mobile.value.trim(),
+            email: email.value.trim(),
+            aadhaar: aadhaar.value.replace(/\s/g, ''),
+            password: password.value,
+          }),
+        });
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('⚠️ Registration Failed', data.message || 'Please try again.', 'error');
+          return;
+        }
+
+        _accessToken = data.data.accessToken;
+        _refreshToken = data.data.refreshToken;
+        localStorage.setItem('gsrtc_access_token', _accessToken);
+        localStorage.setItem('gsrtc_refresh_token', _refreshToken);
+        DB.setCurrentUser(data.data.user);
+        showToast('✅ Account Created!', `Welcome to GSRTC E-Pass, ${data.data.user.name.split(' ')[0]}!`, 'success');
+        setTimeout(() => {
+          initPortalPage();
+          updateNav('portal');
+          updateBodyBg('portal');
+        }, 500);
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      }
+    }
+
+    async function logoutUser() {
+      try {
+        await apiFetch('/auth/logout', {
+          method: 'POST',
+          body: JSON.stringify({ refreshToken: _refreshToken }),
+        });
+      } catch { }
+      DB.clearCurrentUser();
+      initPortalPage();
+      updateNav('portal');
+      showToast('👋 Logged Out', 'You have been signed out.', 'success');
+    }
+
+    function switchPTab(id, button) {
+      document.querySelectorAll('.ptab-panel').forEach((panel) => panel.classList.remove('active'));
+      document.querySelectorAll('.ptab').forEach((tab) => tab.classList.remove('active'));
+      document.getElementById(`ptab-${id}`).classList.add('active');
+      button.classList.add('active');
+      if (id === 'myapps') renderMyApps();
+      if (id === 'download') renderDownloads();
+    }
+
+    async function loadConfig() {
+      try {
+        const [passTypesResponse, validityResponse] = await Promise.all([
+          fetch(`${API_BASE}/config/pass-types`),
+          fetch(`${API_BASE}/config/validity-options`),
+        ]);
+        const [passTypesData, validityData] = await Promise.all([
+          safeJson(passTypesResponse),
+          safeJson(validityResponse),
+        ]);
+
+        if (passTypesResponse.ok) {
+          passTypesCache = passTypesData.data || [];
+          const select = document.getElementById('ap-type');
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">Select Pass Type</option>' +
+            passTypesCache.map((pt) => `<option value="${escapeHtml(pt.name)}">${escapeHtml(pt.name)}</option>`).join('');
+          select.value = currentValue;
+        }
+
+        if (validityResponse.ok) {
+          validityCache = validityData.data || [];
+          const select = document.getElementById('ap-validity');
+          const currentValue = select.value;
+          // Use the 'value' field as the canonical key (matches backend validator), display 'label'
+          select.innerHTML = '<option value="">Select Duration</option>' +
+            validityCache.map((opt) => `<option value="${escapeHtml(opt.value || opt.label)}">${escapeHtml(opt.label)}</option>`).join('');
+          select.value = currentValue;
+          await refreshValidityLabels();
+        }
+      } catch { }
+    }
+
+    async function refreshValidityLabels() {
+      const type = document.getElementById('ap-type').value;
+      const select = document.getElementById('ap-validity');
+      const currentValue = select.value;
+
+      if (!validityCache.length) return;
+
+      if (!type) {
+        select.innerHTML = '<option value="">Select Duration</option>' +
+          validityCache.map((opt) => `<option value="${escapeHtml(opt.value || opt.label)}">${escapeHtml(opt.label)}</option>`).join('');
+        select.value = currentValue;
+        updatePreview();
+        return;
+      }
+
+      const optionMarkup = await Promise.all(
+        validityCache.map(async (opt) => {
+          const val = escapeHtml(opt.value || opt.label);
+          const lbl = escapeHtml(opt.label);
+          try {
+            const response = await fetch(`${API_BASE}/config/calculate-amount?passType=${encodeURIComponent(type)}&validity=${encodeURIComponent(opt.value || opt.label)}`);
+            const data = await safeJson(response);
+            if (!response.ok) return `<option value="${val}">${lbl}</option>`;
+            return `<option value="${val}">${lbl} — ${formatAmount(data.data.amount)}</option>`;
+          } catch {
+            return `<option value="${val}">${lbl}</option>`;
+          }
+        })
+      );
+
+      select.innerHTML = `<option value="">Select Duration</option>${optionMarkup.join('')}`;
+      select.value = currentValue;
+      updatePreview();
+    }
+
+    async function handleApply() {
+      const name = document.getElementById('ap-name').value.trim();
+      const passType = document.getElementById('ap-type').value;
+      const mobile = document.getElementById('ap-mobile').value.trim();
+      const fromCity = document.getElementById('ap-from').value.trim();
+      const toCity = document.getElementById('ap-to').value.trim();
+      const validity = document.getElementById('ap-validity').value;
+
+      if (!name || name.length < 2) {
+        document.getElementById('ap-name').classList.add('error');
+        showToast('⚠️ Missing Fields', 'Please fill all required fields.', 'warn');
+        return;
+      }
+      if (!passType) {
+        showToast('⚠️ Select Pass Type', 'Please select a pass type.', 'warn');
+        return;
+      }
+      if (!/^[6-9]\d{9}$/.test(mobile)) {
+        showToast('⚠️ Invalid Mobile', 'Enter a valid 10-digit mobile number.', 'warn');
+        return;
+      }
+      if (!fromCity || fromCity.length < 2) {
+        document.getElementById('ap-from').classList.add('error');
+        showToast('⚠️ Missing Fields', 'Please enter origin city.', 'warn');
+        return;
+      }
+      if (!toCity || toCity.length < 2) {
+        document.getElementById('ap-to').classList.add('error');
+        showToast('⚠️ Missing Fields', 'Please enter destination city.', 'warn');
+        return;
+      }
+      if (!validity) {
+        showToast('⚠️ Select Duration', 'Please select pass validity.', 'warn');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('applicantName', name);
+      formData.append('passType', passType);
+      formData.append('mobile', mobile);
+      formData.append('email', document.getElementById('ap-email').value.trim());
+      formData.append('collegeOrg', document.getElementById('ap-college').value.trim());
+      formData.append('fromCity', fromCity);
+      formData.append('toCity', toCity);
+      formData.append('validity', validity);
+
+      const photoFile = document.getElementById('ap-photo').files[0];
+      const documentFile = document.getElementById('ap-document').files[0];
+      if (photoFile) formData.append('photo', photoFile);
+      if (documentFile) formData.append('document', documentFile);
+
+      try {
+        const response = await apiFetch('/applications', { method: 'POST', body: formData });
+        const data = await safeJson(response);
+        if (!response.ok) {
+          const message = data.errors?.[0]?.msg || data.message || 'Please try again.';
+          showToast('❌ Submission Failed', message, 'error');
+          return;
+        }
+        showToast('📨 Application Submitted!', `Your App ID is ${data.data.id}. Approval within 24 hours.`, 'success');
+        clearApplyForm();
+        renderMyApps();
+        setTimeout(() => {
+          const tab = document.querySelectorAll('.ptab')[1];
+          if (tab) tab.click();
+        }, 700);
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      }
+    }
+
+    function clearApplyForm() {
+      ['ap-name', 'ap-mobile', 'ap-from', 'ap-to', 'ap-email', 'ap-college'].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = '';
+        input.classList.remove('valid', 'error');
+      });
+      document.getElementById('ap-type').value = '';
+      document.getElementById('ap-validity').value = '';
+      document.getElementById('ap-photo').value = '';
+      document.getElementById('ap-document').value = '';
+      document.getElementById('ap-photo-name').textContent = 'No photo selected';
+      document.getElementById('ap-document-name').textContent = 'No document selected';
+      refreshValidityLabels();
+      updatePreview();
+    }
+
+    async function renderMyApps() {
+      const user = DB.getCurrentUser();
+      if (!user) return;
+
+      const container = document.getElementById('myapps-list');
+      container.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,.4)">Loading...</div>';
+
+      try {
+        const response = await apiFetch('/applications/my?limit=100');
+        const data = await safeJson(response);
+        if (!response.ok) throw new Error();
+
+        const apps = data.data || [];
+        document.getElementById('myapps-count').textContent = `(${apps.length})`;
+        if (!apps.length) {
+          container.innerHTML = `<div class="empty-state"><div class="ei">📭</div><p>No applications yet.<br><button onclick="document.querySelectorAll('.ptab')[0].click()" style="color:var(--orange);background:none;border:none;cursor:pointer;font-size:inherit;font-family:inherit">Apply for your first pass →</button></p></div>`;
+          return;
+        }
+
+        container.innerHTML = apps.map((app) => `
+      <div class="app-card">
+        <div class="app-card-hd">
+          <div>
+            <div class="app-id">${escapeHtml(app.id)}</div>
+            <div class="app-name">${escapeHtml(app.applicant_name)}</div>
+          </div>
+          ${statusBadge(app.status)}
+        </div>
+        <div class="app-meta">
+          <strong>Pass Type:</strong> ${escapeHtml(app.pass_type)} &nbsp;|&nbsp;
+          <strong>Validity:</strong> ${escapeHtml(app.validity)} &nbsp;|&nbsp;
+          <strong>Amount:</strong> ${formatAmount(app.amount)}<br>
+          <strong>College/Org:</strong> ${escapeHtml(app.college_org || '—')} &nbsp;|&nbsp;
+          <strong>Applied:</strong> ${formatDate(app.submitted_at)}
+        </div>
+        <div style="margin-top:.8rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <div class="app-route-pill">${escapeHtml(app.from_city)} ⟶ ${escapeHtml(app.to_city)}</div>
+          ${app.status === 'Approved' ? '<button class="btn btn-sm btn-outline" onclick="document.querySelectorAll(\'.ptab\')[3].click();renderDownloads()">📥 Download Pass</button>' : ''}
+        </div>
+      </div>
+    `).join('');
+      } catch {
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171">Failed to load applications. Is the backend running?</div>';
+      }
+    }
+
+    async function trackApplication() {
+      const appId = document.getElementById('track-input').value.trim();
+      const result = document.getElementById('track-result');
+      const empty = document.getElementById('track-empty');
+
+      if (!appId) {
+        showToast('⚠️ Enter ID', 'Please enter an application ID.', 'warn');
+        return;
+      }
+
+      result.style.display = 'none';
+      empty.style.display = 'block';
+      empty.innerHTML = '<div style="color:rgba(255,255,255,.3);font-size:.9rem">Searching...</div>';
+
+      try {
+        const response = await fetch(`${API_BASE}/applications/track/${encodeURIComponent(appId)}`);
+        const data = await safeJson(response);
+        if (!response.ok) {
+          empty.innerHTML = `<div style="color:#f87171;font-size:.9rem">❌ No application found with ID <strong>${escapeHtml(appId)}</strong>. Please check and try again.</div>`;
+          return;
+        }
+
+        const app = data.data;
+        const submittedAt = formatDate(app.submitted_at, true);
+        const steps = [
+          { title: 'Application Submitted', time: submittedAt, state: 'done' },
+          { title: 'Payment Confirmed', time: `${submittedAt} — ${formatAmount(app.amount)}`, state: 'done' },
+          {
+            title: 'Document Verification',
+            time: app.status === 'Rejected' ? 'Documents did not pass verification' : app.status === 'Approved' ? 'Verified successfully' : 'In progress — estimated 1-2 days',
+            state: app.status === 'Rejected' ? 'rej' : app.status === 'Approved' ? 'done' : 'prog',
+          },
+          {
+            title: 'Approval by GSRTC Officer',
+            time: app.status === 'Rejected' ? (app.rejection_reason || 'Application rejected') : app.status === 'Approved' ? `Approved on ${formatDate(app.reviewed_at, true)}` : 'Pending',
+            state: app.status === 'Rejected' ? 'rej' : app.status === 'Approved' ? 'done' : 'pend',
+          },
+          {
+            title: 'E-Pass Issued & Ready',
+            time: app.status === 'Approved' ? `Valid ${formatDate(app.valid_from)} to ${formatDate(app.valid_until)}` : 'Pending',
+            state: app.status === 'Approved' ? 'done' : 'pend',
+          },
+        ];
+
+        empty.style.display = 'none';
+        result.style.display = 'block';
+        result.innerHTML = `
+      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.8rem">
+          <div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:4px">Application ID</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:white">${escapeHtml(app.id)}</div>
+            <div style="font-size:.78rem;color:rgba(255,255,255,.45);margin-top:3px">${escapeHtml(app.applicant_name)} • ${escapeHtml(app.pass_type)}</div>
+          </div>
+          ${statusBadge(app.status)}
+        </div>
+        <div class="timeline">
+          ${steps.map((step) => `
+            <div class="tl-item">
+              <div class="tl-dot ${step.state}">${step.state === 'done' ? '✓' : step.state === 'prog' ? '●' : step.state === 'rej' ? '✕' : ''}</div>
+              <div>
+                <div class="tl-title">${escapeHtml(step.title)}</div>
+                <div class="tl-time">${escapeHtml(step.time)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+      } catch {
+        empty.innerHTML = '<div style="color:#f87171;font-size:.9rem">❌ Server error. Is the backend running?</div>';
+      }
+    }
+
+    async function renderDownloads() {
+      const user = DB.getCurrentUser();
+      if (!user) return;
+
+      const container = document.getElementById('download-content');
+      container.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,.4)">Loading...</div>';
+
+      try {
+        const response = await apiFetch('/applications/downloads');
+        const data = await safeJson(response);
+        if (!response.ok) throw new Error();
+
+        const approved = data.data || [];
+        if (!approved.length) {
+          container.innerHTML = '<div style="text-align:center;padding:3rem;color:rgba(255,255,255,.4)"><div style="font-size:3rem;margin-bottom:1rem">📭</div><p>No approved passes yet. Submit an application and wait for approval.</p></div>';
+          return;
+        }
+
+        container.innerHTML = approved.map((app) => `
+      <div style="margin-bottom:2rem">
+        <div class="digital-pass">
+          <div class="dp-hd">
+            <div class="dp-logo">
+              <div class="dp-logo-box">🚌</div>
+              <div class="dp-logo-txt"><span>GSRTC E-PASS</span><span>Gujarat State Road Transport Corporation</span></div>
+            </div>
+            <div class="dp-valid">✅ VALID</div>
+          </div>
+          <div class="dp-body">
+            <div class="dp-photo">👤</div>
+            <div>
+              <div class="dp-name">${escapeHtml(app.applicant_name)}</div>
+              <div class="dp-type">${escapeHtml(app.pass_type)}</div>
+              <div class="dp-info-txt">
+                <strong>Mobile:</strong> ${escapeHtml(app.mobile)}<br>
+                ${app.college_org ? `<strong>Org:</strong> ${escapeHtml(app.college_org)}<br>` : ''}
+                <strong>Pass ID:</strong> <code style="color:#F5A623">${escapeHtml(app.id)}</code>
+              </div>
+            </div>
+          </div>
+          <div class="dp-divider"></div>
+          <div class="dp-route">
+            <div style="text-align:center"><div style="font-size:.65rem;color:rgba(255,255,255,.4);margin-bottom:2px">FROM</div><div class="dp-city">${escapeHtml(app.from_city)}</div></div>
+            <div class="dp-arr">⟶</div>
+            <div style="text-align:center"><div style="font-size:.65rem;color:rgba(255,255,255,.4);margin-bottom:2px">TO</div><div class="dp-city">${escapeHtml(app.to_city)}</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;font-size:.78rem">
+            <div><div style="color:rgba(255,255,255,.4);font-size:.62rem;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Valid From</div><div style="color:white;font-weight:600">${formatDate(app.valid_from)}</div></div>
+            <div><div style="color:rgba(255,255,255,.4);font-size:.62rem;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Valid Until</div><div style="color:white;font-weight:600">${formatDate(app.valid_until)}</div></div>
+            <div><div style="color:rgba(255,255,255,.4);font-size:.62rem;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Validity</div><div style="color:white;font-weight:600">${escapeHtml(app.validity)}</div></div>
+            <div><div style="color:rgba(255,255,255,.4);font-size:.62rem;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Amount</div><div style="color:#F5A623;font-weight:700">${formatAmount(app.amount)}</div></div>
+          </div>
+          <button onclick="downloadPassPDF('${escapeHtml(app.id)}')" class="btn btn-gold btn-full" id="dl-btn-${escapeHtml(app.id)}">📥 Download PDF Pass</button>
+        </div>
+      </div>
+    `).join('');
+      } catch {
+        container.innerHTML = '<div style="text-align:center;padding:3rem;color:#f87171">Failed to load passes. Is the backend running?</div>';
+      }
+    }
+
+    async function downloadPassPDF(appId) {
+      const btn = document.getElementById(`dl-btn-${appId}`);
+      const originalText = btn ? btn.innerHTML : '';
+      if (btn) { btn.innerHTML = '⏳ Generating PDF…'; btn.disabled = true; btn.style.opacity = '.7'; }
+      try {
+        const response = await apiFetch(`/applications/${encodeURIComponent(appId)}/download`, {});
+        if (!response.ok) {
+          const data = await safeJson(response);
+          showToast('❌ Download Failed', data.message || 'Unable to download pass.', 'error');
+          return;
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `GSRTC-EPass-${appId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        showToast('📥 Downloaded!', `E-Pass ${appId} downloaded successfully.`, 'success');
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      } finally {
+        if (btn) { btn.innerHTML = originalText; btn.disabled = false; btn.style.opacity = '1'; }
+      }
+    }
+
+    function updatePreview() {
+      const getValue = (id) => document.getElementById(id)?.value || '';
+      const name = getValue('ap-name').trim();
+      const type = getValue('ap-type');
+      const from = getValue('ap-from').trim();
+      const to = getValue('ap-to').trim();
+      const college = getValue('ap-college').trim();
+      const validity = getValue('ap-validity');
+      const element = (id) => document.getElementById(id);
+
+      if (element('prev-name')) element('prev-name').innerHTML = name ? escapeHtml(name) : '<span class="empty-v">Your Name</span>';
+      if (element('prev-type')) element('prev-type').textContent = type || 'Pass Type';
+      if (element('prev-from')) {
+        element('prev-from').textContent = from || '—';
+        element('prev-from').className = from ? '' : 'empty-v';
+      }
+      if (element('prev-to')) {
+        element('prev-to').textContent = to || '—';
+        element('prev-to').className = to ? '' : 'empty-v';
+      }
+      if (element('prev-college')) {
+        element('prev-college').textContent = college || '—';
+        element('prev-college').className = college ? '' : 'empty-v';
+      }
+      if (element('prev-validity')) {
+        element('prev-validity').textContent = validity ? validity.split('—')[0].trim() : '—';
+        element('prev-validity').className = validity ? '' : 'empty-v';
+      }
+      if (element('prev-date')) element('prev-date').textContent = formatDate(new Date());
+    }
+
+    function initAdminPage() {
+      if (DB.isAdmin()) {
+        document.getElementById('adminLoginView').style.display = 'none';
+        document.getElementById('adminDashView').style.display = 'block';
+        document.body.classList.remove('dark-bg');
+        document.body.classList.add('light-bg');
+        renderAdminStats();
+        renderAppsTable();
+        renderUsersTable();
+      } else {
+        document.getElementById('adminLoginView').style.display = 'flex';
+        document.getElementById('adminDashView').style.display = 'none';
+        document.body.classList.add('dark-bg');
+        document.body.classList.remove('light-bg');
+      }
+    }
+
+    async function handleAdminLogin() {
+      const username = document.getElementById('a-user').value.trim();
+      const password = document.getElementById('a-pwd').value;
+      document.getElementById('a-user-msg').classList.remove('show');
+      document.getElementById('a-pwd-msg').classList.remove('show');
+
+      if (!username) {
+        document.getElementById('a-user-msg').classList.add('show');
+        return;
+      }
+      if (!password) {
+        document.getElementById('a-pwd-msg').classList.add('show');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('❌ Login Failed', data.message || 'Invalid admin credentials.', 'error');
+          return;
+        }
+
+        _adminAccess = data.data.accessToken;
+        _adminRefresh = data.data.refreshToken;
+        sessionStorage.setItem('gsrtc_admin_access', _adminAccess);
+        sessionStorage.setItem('gsrtc_admin_refresh', _adminRefresh);
+        DB.setAdmin();
+        showToast('✅ Admin Login Successful', 'Welcome to the GSRTC Admin Dashboard.', 'success');
+        setTimeout(() => {
+          initAdminPage();
+          updateNav('admin');
+        }, 500);
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      }
+    }
+
+
+
+    async function adminLogout() {
+      try {
+        await apiFetch('/admin/logout', {
+          method: 'POST',
+          body: JSON.stringify({ refreshToken: _adminRefresh }),
+        }, true);
+      } catch { }
+      DB.clearAdmin();
+      initAdminPage();
+      updateNav('admin');
+      showToast('👋 Logged Out', 'Admin session ended.', 'success');
+    }
+
+    function switchDTab(id, button) {
+      document.querySelectorAll('.dtab-panel').forEach((panel) => panel.classList.remove('active'));
+      document.querySelectorAll('.dtab').forEach((tab) => tab.classList.remove('active'));
+      document.getElementById(`dtab-${id}`).classList.add('active');
+      button.classList.add('active');
+      if (id === 'analytics') renderAnalytics();
+    }
+
+    async function renderAdminStats() {
+      try {
+        const response = await apiFetch('/applications/admin/stats', {}, true);
+        const data = await safeJson(response);
+        if (!response.ok || !data.data) return;
+
+        const overview = data.data.overview;
+        const totalApplications = Number(overview.totalApplications || 0);
+        const approved = Number(overview.approved || 0);
+        const pending = Number(overview.pending || 0);
+        const rejected = Number(overview.rejected || 0);
+        const totalRevenue = Number(overview.totalRevenue || 0);
+        const totalUsers = Number(overview.totalUsers || 0);
+
+        const stats = [
+          { icon: '📋', bg: 'rgba(232,84,26,.1)', value: totalApplications, label: 'Total Applications', change: `↑ ${pending} pending`, cls: 'down' },
+          { icon: '✅', bg: 'rgba(16,185,129,.1)', value: approved, label: 'Approved Passes', change: `${totalApplications ? Math.round((approved / totalApplications) * 100) : 0}% approval`, cls: 'up' },
+          { icon: '⏳', bg: 'rgba(245,158,11,.1)', value: pending, label: 'Pending Review', change: `${rejected} rejected`, cls: 'down' },
+          { icon: '💰', bg: 'rgba(139,92,246,.1)', value: formatAmount(totalRevenue), label: 'Revenue Collected', change: `from ${approved} approved passes`, cls: 'up' },
+        ];
+
+        document.getElementById('statsGrid').innerHTML = stats.map((stat) => `
+      <div class="stat-card">
+        <div class="stat-card-ico" style="background:${stat.bg}">${stat.icon}</div>
+        <div>
+          <div class="stat-card-num">${escapeHtml(stat.value)}</div>
+          <div class="stat-card-label">${escapeHtml(stat.label)}</div>
+          <div class="stat-card-change ${stat.cls}">${escapeHtml(stat.change)}</div>
+        </div>
+      </div>
+    `).join('');
+
+        document.getElementById('apps-count-badge').textContent = `${totalApplications} total`;
+        document.getElementById('users-count-badge').textContent = `${totalUsers} total`;
+
+        if (data.data.byPassType?.length) {
+          const max = Math.max(...data.data.byPassType.map((item) => Number(item.count)), 1);
+          document.getElementById('type-chart').innerHTML = data.data.byPassType.map((item) => `
+        <div class="bar-item">
+          <div class="bar-label" style="font-size:.72rem">${escapeHtml(item.pass_type)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round((Number(item.count) / max) * 100)}%"></div></div>
+          <div class="bar-val">${Number(item.count)}</div>
+        </div>
+      `).join('');
+        }
+
+        const statusRows = [
+          { status: 'Pending', count: pending, color: 'rgba(245,158,11,1)' },
+          { status: 'Approved', count: approved, color: 'rgba(16,185,129,1)' },
+          { status: 'Rejected', count: rejected, color: 'rgba(239,68,68,1)' },
+        ];
+        const statusMax = Math.max(...statusRows.map((row) => row.count), 1);
+        document.getElementById('status-chart').innerHTML = statusRows.map((row) => `
+      <div class="bar-item">
+        <div class="bar-label">${row.status}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round((row.count / statusMax) * 100)}%;background:${row.color}"></div></div>
+        <div class="bar-val">${row.count}</div>
+      </div>
+    `).join('');
+
+        if (data.data.topRoutes?.length) {
+          const routeMax = Math.max(...data.data.topRoutes.map((item) => Number(item.count)), 1);
+          document.getElementById('route-chart').innerHTML = data.data.topRoutes.map((item) => `
+        <div class="bar-item">
+          <div class="bar-label" style="font-size:.72rem">${escapeHtml(item.route)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round((Number(item.count) / routeMax) * 100)}%"></div></div>
+          <div class="bar-val">${Number(item.count)}</div>
+        </div>
+      `).join('');
+        }
+      } catch { }
+    }
+
+    async function renderAppsTable() {
+      const search = document.getElementById('apps-search').value || '';
+      const filter = document.getElementById('apps-filter').value;
+      const tbody = document.getElementById('apps-tbody');
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Loading...</td></tr>';
+
+      try {
+        const params = new URLSearchParams({ limit: '50' });
+        if (filter) params.set('status', filter);
+        if (search.trim()) params.set('search', search.trim());
+        const response = await apiFetch(`/applications/admin/all?${params.toString()}`, {}, true);
+        const data = await safeJson(response);
+        if (!response.ok) throw new Error();
+
+        const apps = data.data || [];
+        if (!apps.length) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No applications found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = apps.map((app) => {
+          const status = app.status;
+          let actions = '<button class="act-btn act-issued">✓ Issued</button>';
+          if (status === 'Pending') {
+            actions = `<span id="action-${escapeHtml(app.id)}"><button class="act-btn act-approve" onclick="confirmApprove('${escapeHtml(app.id)}', this)">✅ Approve</button> <button class="act-btn act-reject" onclick="confirmReject('${escapeHtml(app.id)}', this)">❌ Reject</button></span>`;
+          }
+          return `
+        <tr>
+          <td><code style="font-size:.72rem;color:#6366f1">${escapeHtml(app.id)}</code></td>
+          <td><div style="font-weight:600">${escapeHtml(app.applicant_name)}</div><div style="font-size:.72rem;color:var(--gray-400)">${escapeHtml(app.mobile)}</div></td>
+          <td>${escapeHtml(app.pass_type)}</td>
+          <td>${escapeHtml(app.from_city)}→${escapeHtml(app.to_city)}</td>
+          <td>${escapeHtml(app.validity)}</td>
+          <td>${formatAmount(app.amount)}</td>
+          <td>${formatDate(app.submitted_at)}</td>
+          <td>${adminBadge(status)}</td>
+          <td style="white-space:nowrap">${actions}</td>
+        </tr>
+      `;
+        }).join('');
+      } catch {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="9" style="color:#f87171">Failed to load applications. Is the backend running?</td></tr>';
+      }
+    }
+
+    // ── Inline 2-click confirm for Approve ──
+    function confirmApprove(id, btn) {
+      const span = document.getElementById(`action-${id}`);
+      if (!span) return;
+      span.innerHTML = `<span style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap"><span style="font-size:.68rem;color:var(--gray-600);font-weight:600">Approve?</span><button class="act-btn act-confirm-yes" onclick="executeApprove('${id}')">✅ Yes</button><button class="act-btn act-confirm-no" onclick="cancelAction('${id}')">✖ No</button></span>`;
+    }
+
+    // ── Inline 2-click confirm for Reject ──
+    function confirmReject(id, btn) {
+      const span = document.getElementById(`action-${id}`);
+      if (!span) return;
+      span.innerHTML = `<div class="reject-reason-inline"><input type="text" id="reject-reason-${id}" placeholder="Reason…" onkeydown="if(event.key==='Enter')executeReject('${id}')"><button class="act-btn act-reject-confirm" onclick="executeReject('${id}')">❌ Reject</button><button class="act-btn act-reject-cancel" onclick="cancelAction('${id}')">✖ Cancel</button></div>`;
+      setTimeout(() => { const inp = document.getElementById(`reject-reason-${id}`); if (inp) inp.focus(); }, 50);
+    }
+
+    // ── Cancel and restore original buttons ──
+    function cancelAction(id) {
+      const span = document.getElementById(`action-${id}`);
+      if (!span) return;
+      span.innerHTML = `<button class="act-btn act-approve" onclick="confirmApprove('${id}', this)">✅ Approve</button> <button class="act-btn act-reject" onclick="confirmReject('${id}', this)">❌ Reject</button>`;
+    }
+
+    async function executeApprove(id) {
+      const span = document.getElementById(`action-${id}`);
+      if (span) span.innerHTML = '<span style="font-size:.72rem;color:var(--gray-400)">Processing…</span>';
+      try {
+        const response = await apiFetch(`/applications/admin/${encodeURIComponent(id)}/review`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status: 'Approved' }),
+        }, true);
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('❌ Error', data.message || 'Unable to approve application.', 'error');
+          cancelAction(id);
+          return;
+        }
+        await Promise.all([renderAdminStats(), renderAppsTable()]);
+        showToast('✅ Approved!', `Pass ${id} approved successfully.`, 'success');
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+        cancelAction(id);
+      }
+    }
+
+    async function executeReject(id) {
+      const reasonInput = document.getElementById(`reject-reason-${id}`);
+      const reason = reasonInput ? reasonInput.value.trim() : '';
+      if (!reason) {
+        if (reasonInput) { reasonInput.style.borderColor = 'var(--danger)'; reasonInput.placeholder = 'Reason required!'; }
+        showToast('⚠️ Required', 'Please enter a rejection reason.', 'warn');
+        return;
+      }
+      const span = document.getElementById(`action-${id}`);
+      if (span) span.innerHTML = '<span style="font-size:.72rem;color:var(--gray-400)">Processing…</span>';
+      try {
+        const response = await apiFetch(`/applications/admin/${encodeURIComponent(id)}/review`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status: 'Rejected', rejectionReason: reason }),
+        }, true);
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('❌ Error', data.message || 'Unable to reject application.', 'error');
+          cancelAction(id);
+          return;
+        }
+        await Promise.all([renderAdminStats(), renderAppsTable()]);
+        showToast('❌ Rejected', `Application ${id} rejected.`, 'error');
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+        cancelAction(id);
+      }
+    }
+
+    async function renderUsersTable() {
+      const search = document.getElementById('users-search').value || '';
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Loading...</td></tr>';
+
+      try {
+        const params = new URLSearchParams({ limit: '50' });
+        if (search.trim()) params.set('search', search.trim());
+        const response = await apiFetch(`/applications/admin/users?${params.toString()}`, {}, true);
+        const data = await safeJson(response);
+        if (!response.ok) throw new Error();
+
+        const users = data.data || [];
+        if (!users.length) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No registered users found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = users.map((user) => {
+          const aadhaar = user.aadhaar ? `XXXX XXXX ${String(user.aadhaar).slice(-4)}` : '—';
+          return `
+        <tr>
+          <td><code style="font-size:.72rem;color:#6366f1">${escapeHtml(String(user.id).slice(0, 12))}</code></td>
+          <td><div style="font-weight:600">${escapeHtml(user.name)}</div></td>
+          <td>${escapeHtml(user.mobile)}</td>
+          <td>${escapeHtml(user.email || '—')}</td>
+          <td style="font-family:monospace;font-size:.78rem">${escapeHtml(aadhaar)}</td>
+          <td>${formatDate(user.created_at)}</td>
+          <td><span class="badge badge-orange">${Number(user.app_count)} app${Number(user.app_count) !== 1 ? 's' : ''}</span></td>
+        </tr>
+      `;
+        }).join('');
+      } catch {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="7" style="color:#f87171">Failed to load users.</td></tr>';
+      }
+    }
+
+    function renderAnalytics() {
+      renderAdminStats();
+    }
+
+    function filterName(input) {
+      const cursor = input.selectionStart;
+      input.value = input.value.replace(/[^A-Za-z\s]/g, '');
+      try { input.setSelectionRange(cursor, cursor); } catch { }
+      input.classList.remove('valid', 'error');
+    }
+
+    function filterMobile(input) {
+      input.value = input.value.replace(/\D/g, '').slice(0, 10);
+      input.classList.remove('valid', 'error');
+    }
+
+    function lowercaseEmail(input) {
+      const cursor = input.selectionStart;
+      input.value = input.value.toLowerCase();
+      try { input.setSelectionRange(cursor, cursor); } catch { }
+      input.classList.remove('valid', 'error');
+    }
+
+    function filterAadhaar(input) {
+      let value = input.value.replace(/\D/g, '').slice(0, 12);
+      value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+      input.value = value;
+      input.classList.remove('valid', 'error');
+    }
+
+    function setValidity(input, messageId, isValid, errorMessage) {
+      input.classList.remove('valid', 'error');
+      const message = document.getElementById(messageId);
+      if (!input.value.trim()) {
+        if (message) message.classList.remove('show');
+        return;
+      }
+      if (isValid) {
+        input.classList.add('valid');
+        if (message) message.classList.remove('show');
+      } else {
+        input.classList.add('error');
+        if (message) {
+          message.textContent = errorMessage;
+          message.classList.add('show');
+        }
+      }
+    }
+
+    function validateName(input, messageId) {
+      const value = input.value.trim();
+      setValidity(input, messageId, value.length >= 2 && /^[A-Za-z\s]+$/.test(value), 'Name must be at least 2 letters, no numbers.');
+    }
+
+    function validateMobile(input, messageId) {
+      setValidity(input, messageId, /^[6-9]\d{9}$/.test(input.value), 'Enter valid 10-digit Indian mobile number.');
+    }
+
+    function validateEmail(input, messageId) {
+      setValidity(input, messageId, /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/.test(input.value), 'Enter a valid email address.');
+    }
+
+    function validateAadhaar(input, messageId) {
+      setValidity(input, messageId, /^\d{12}$/.test(input.value.replace(/\s/g, '')), 'Aadhaar must be exactly 12 digits.');
+    }
+
+    function validatePassword(input, messageId) {
+      const value = input.value;
+      setValidity(input, messageId, value.length >= 8 && /[a-zA-Z]/.test(value) && /\d/.test(value), 'Min 8 chars with letters & numbers.');
+    }
+
+    function checkCpwd(input) {
+      const password = document.getElementById('r-pwd').value;
+      const message = document.getElementById('r-cpwd-msg');
+      input.classList.remove('valid', 'error');
+      if (!input.value) {
+        message.classList.remove('show');
+        return;
+      }
+      if (input.value === password) {
+        input.classList.add('valid');
+        message.classList.remove('show');
+      } else {
+        input.classList.add('error');
+        message.textContent = 'Passwords do not match.';
+        message.classList.add('show');
+      }
+    }
+
+    function togglePwd(id, button) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+      button.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+
+    function checkStrength(input) {
+      const value = input.value;
+      const bars = document.getElementById('r-pwd-bars');
+      if (!value) {
+        bars.style.display = 'none';
+        return;
+      }
+      bars.style.display = 'block';
+      let score = 0;
+      if (value.length >= 8) score++;
+      if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+      if (/\d/.test(value)) score++;
+      if (/[^A-Za-z0-9]/.test(value)) score++;
+
+      const cls = ['', 'weak', 'weak', 'medium', 'strong'];
+      const label = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+      const color = ['', '#f87171', '#f87171', '#fbbf24', '#34d399'];
+
+      [1, 2, 3, 4].forEach((index) => {
+        const bar = document.getElementById(`pb${index}`);
+        bar.className = 'pwd-bar';
+        if (index <= score) bar.classList.add(cls[score]);
+      });
+
+      const text = document.getElementById('pwd-lbl');
+      text.textContent = label[score] || '';
+      text.style.color = color[score] || '';
+    }
+
+    function toggleMenu() {
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    function closeMenu() {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobileNav').classList.remove('open');
+    }
+
+    document.addEventListener('click', (event) => {
+      const mobileNav = document.getElementById('mobileNav');
+      const hamburger = document.getElementById('hamburger');
+      if (mobileNav.classList.contains('open') && !mobileNav.contains(event.target) && !hamburger.contains(event.target)) {
+        closeMenu();
+      }
+    });
+
+    function showToast(title, message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.className = 'toast';
+      if (type === 'error') toast.classList.add('t-error');
+      if (type === 'warn') toast.classList.add('t-warn');
+      document.getElementById('toast-title').textContent = title;
+      document.getElementById('toast-msg').textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    window.addEventListener('scroll', () => {
+      const button = document.getElementById('scrollTop');
+      if (window.scrollY > 400) button.classList.add('show');
+      else button.classList.remove('show');
+    });
+
+    function wireFileInputs() {
+      const photoInput = document.getElementById('ap-photo');
+      const documentInput = document.getElementById('ap-document');
+      const photoName = document.getElementById('ap-photo-name');
+      const documentName = document.getElementById('ap-document-name');
+      const passType = document.getElementById('ap-type');
+      const validity = document.getElementById('ap-validity');
+
+      if (!photoInput || !documentInput || !photoName || !documentName || !passType || !validity) {
+        return;
+      }
+
+      photoInput.addEventListener('change', () => {
+        photoName.textContent = photoInput.files[0]?.name || 'No photo selected';
+      });
+      documentInput.addEventListener('change', () => {
+        documentName.textContent = documentInput.files[0]?.name || 'No document selected';
+      });
+
+      passType.addEventListener('change', () => {
+        refreshValidityLabels();
+        updatePreview();
+      });
+      validity.addEventListener('change', updatePreview);
+    }
+
+    function init() {
+      seedData();
+      updatePreview();
+      // wipe authentication inputs immediately to prevent browser autofill
+      setTimeout(() => {
+        ['l-mobile', 'l-pwd', 'a-user', 'a-pwd'].forEach(fid => {
+          const el = document.getElementById(fid);
+          if (el) el.value = '';
+        });
+      }, 100);
+      const requestedPage =
+        window.location.pathname === '/portal' ? 'portal' :
+          window.location.pathname === '/admin' ? 'admin' :
+            window.location.pathname === '/' ? 'landing' :
+              new URLSearchParams(window.location.search).get('page');
+      if (requestedPage === 'portal' || requestedPage === 'admin' || requestedPage === 'landing') {
+        goTo(requestedPage);
+      } else if (DB.isAdmin()) {
+        goTo('admin');
+      } else if (DB.getCurrentUser()) {
+        goTo('portal');
+      } else {
+        updateNav('landing');
+      }
+      wireFileInputs();
+      loadConfig();
+    }
+
+    init();
+
+  </script>
+</body>
+
+</html>
