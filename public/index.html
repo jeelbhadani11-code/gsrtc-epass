@@ -5063,9 +5063,14 @@
       const makeCard = (label, url) => {
         if (!url) return `<div style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);border-radius:12px;padding:1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.85rem">${label}<br><span style="font-size:.75rem">Not uploaded</span></div>`;
         const fullUrl = url.startsWith('http') ? url : API_ROOT + url;
-        const previewSrc = fullUrl;
+        let previewSrc = fullUrl;
 
-        const isPdf   = url.toLowerCase().endsWith('.pdf');
+        // Force cloudinary URLs to serve as an image format if it lacks an explicit extension
+        if (previewSrc.includes('res.cloudinary.com') && !previewSrc.match(/\.[a-zA-Z]{3,4}$/)) {
+          previewSrc += '.jpg';
+        }
+
+        const isPdf   = url.toLowerCase().endsWith('.pdf') || fullUrl.includes('.pdf');
         const preview = isPdf
           ? `<div style="text-align:center;padding:1.5rem;font-size:2rem">📄<br><span style="font-size:.8rem;color:rgba(255,255,255,.5)">PDF Document</span></div>`
           : `<img src="${previewSrc}" referrerpolicy="no-referrer" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="console.error('Failed to load image:', this.src); this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load. Click Open Full View.</div>'">`;
