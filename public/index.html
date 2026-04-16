@@ -4384,7 +4384,17 @@
           return;
         }
 
-        container.innerHTML = approved.map((app) => `
+        const API_ROOT = API_BASE.replace('/api', '');
+        container.innerHTML = approved.map((app) => {
+          let photoSrc = app.photo_url ? (app.photo_url.startsWith('http') ? app.photo_url : API_ROOT + app.photo_url) : '';
+          if (photoSrc && photoSrc.includes('res.cloudinary.com') && !photoSrc.match(/\.[a-zA-Z]{3,4}$/)) {
+            photoSrc += '.jpg';
+          }
+          const avatarHtml = photoSrc 
+            ? `<img src="${escapeHtml(photoSrc)}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div style="display:none;font-size:2rem">👤</div>`
+            : `👤`;
+
+          return `
       <div style="margin-bottom:2rem">
         <div class="digital-pass">
           <div class="dp-hd">
@@ -4395,7 +4405,7 @@
             <div class="dp-valid">✅ VALID</div>
           </div>
           <div class="dp-body">
-            <div class="dp-photo">👤</div>
+            <div class="dp-photo" style="padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden">${avatarHtml}</div>
             <div>
               <div class="dp-name">${escapeHtml(app.applicant_name)}</div>
               <div class="dp-type">${escapeHtml(app.pass_type)}</div>
@@ -4421,7 +4431,7 @@
           <button onclick="downloadPassPDF('${escapeHtml(app.id)}')" class="btn btn-gold btn-full" id="dl-btn-${escapeHtml(app.id)}">📥 Download PDF Pass</button>
         </div>
       </div>
-    `).join('');
+    }).join('');
       } catch {
         container.innerHTML = '<div style="text-align:center;padding:3rem;color:#f87171">Failed to load passes. Is the backend running?</div>';
       }
