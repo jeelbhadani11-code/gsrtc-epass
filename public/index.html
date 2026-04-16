@@ -5068,7 +5068,7 @@
         const isPdf   = url.toLowerCase().endsWith('.pdf');
         const preview = isPdf
           ? `<div style="text-align:center;padding:1.5rem;font-size:2rem">📄<br><span style="font-size:.8rem;color:rgba(255,255,255,.5)">PDF Document</span></div>`
-          : `<img src="${previewSrc}" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load</div>'">`;
+          : `<img src="${previewSrc}" referrerpolicy="no-referrer" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="console.error('Failed to load image:', this.src); this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load. Click Open Full View.</div>'">`;
         return `
           <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden">
             <div style="padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px">${label}</div>
