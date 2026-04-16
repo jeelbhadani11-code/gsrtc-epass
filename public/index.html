@@ -3365,7 +3365,7 @@
                 <label>Upload Documents</label>
                 <div class="upload-box" onclick="document.getElementById('ap-document').click()">
                   <div style="font-size:2rem;margin-bottom:.5rem">📁</div>
-                  <p><strong>Click to upload</strong> supporting document<br>JPG, PNG, PDF — Max 5MB</p>
+                  <p><strong>Click to upload</strong> supporting document<br>JPG, PNG, PDF — Max 2MB</p>
                   <p id="ap-document-name" style="margin-top:.6rem;color:var(--gold)">No document selected</p>
                 </div>
                 <input type="file" id="ap-document" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
@@ -3374,7 +3374,7 @@
                 <label>Applicant Photo</label>
                 <div class="upload-box" onclick="document.getElementById('ap-photo').click()">
                   <div style="font-size:2rem;margin-bottom:.5rem">🖼️</div>
-                  <p><strong>Click to upload</strong> passport-style photo<br>JPG, PNG, WEBP — Max 5MB</p>
+                  <p><strong>Click to upload</strong> passport-style photo<br>JPG, PNG, WEBP — Max 2MB</p>
                   <p id="ap-photo-name" style="margin-top:.6rem;color:var(--gold)">No photo selected</p>
                 </div>
                 <input type="file" id="ap-photo" accept=".jpg,.jpeg,.png,.webp" style="display:none">
@@ -4141,8 +4141,16 @@
         showToast('⚠️ Photo Required', 'Please upload your applicant photo before submitting.', 'warn');
         return;
       }
+      if (photoFile.size > 2 * 1024 * 1024) {
+        showToast('⚠️ Photo Too Large', 'Your photo exceeds 2MB. Please upload a smaller image file.', 'warn');
+        return;
+      }
       if (!documentFile) {
         showToast('⚠️ Document Required', 'Please upload a supporting document (ID/Certificate) before submitting.', 'warn');
+        return;
+      }
+      if (documentFile.size > 2 * 1024 * 1024) {
+        showToast('⚠️ Document Too Large', 'Your document exceeds 2MB. Please upload a smaller file.', 'warn');
         return;
       }
 
@@ -4201,8 +4209,9 @@
           const tab = document.querySelectorAll('.ptab')[1];
           if (tab) tab.click();
         }, 700);
-      } catch {
-        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Error', err.message || 'Could not reach the backend.', 'error');
       } finally {
         if (btnApply) {
           btnApply.disabled = false;
