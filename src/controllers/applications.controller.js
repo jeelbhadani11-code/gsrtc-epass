@@ -7,7 +7,6 @@ const {
 } = require('../utils/helpers');
 const { sendEmail } = require('../utils/email');
 const { logAudit } = require('../middleware/auth');
-const { getFileUrl } = require('../middleware/upload');
 
 // ── SUBMIT APPLICATION (User) ─────────────────────────────────────────
 const submitApplication = async (req, res) => {
@@ -35,8 +34,8 @@ const submitApplication = async (req, res) => {
       if (!exists.rows.length) break;
     }
 
-    const photoUrl    = req.files?.photo?.[0]    ? getFileUrl(req.files.photo[0].path)    : null;
-    const documentUrl = req.files?.document?.[0] ? getFileUrl(req.files.document[0].path) : null;
+    const photoUrl    = req.fileUrls?.photo    || null;
+    const documentUrl = req.fileUrls?.document || null;
 
     // Both files are required
     if (!photoUrl)    return error(res, 'Applicant photo is required. Please upload a photo (JPG/PNG/WebP).', 400);

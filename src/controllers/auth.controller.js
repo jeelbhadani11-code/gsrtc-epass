@@ -5,7 +5,7 @@ const { success, created, error, unauthorized, serverError, notFound } = require
 const { sanitiseUser, maskAadhaar } = require('../utils/helpers');
 const { sendEmail } = require('../utils/email');
 const { logAudit } = require('../middleware/auth');
-const { getFileUrl } = require('../middleware/upload');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
 // ── REGISTER ─────────────────────────────────────────────────────────
 const register = async (req, res) => {
@@ -173,8 +173,13 @@ const updateProfile = async (req, res) => {
       values.push(email || null);
     }
     if (req.file) {
+      const cloudUrl = await uploadToCloudinary(
+        req.file.buffer,
+        'gsrtc/profiles',
+        `${req.user.id.slice(0,8)}_profile_${Date.now()}`
+      );
       updates.push(`photo_url = $${idx++}`);
-      values.push(getFileUrl(req.file.path));
+      values.push(cloudUrl);
     }
 
     if (!updates.length) return error(res, 'No fields to update');

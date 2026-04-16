@@ -14,7 +14,7 @@ const {
 } = require('../controllers/applications.controller');
 const { downloadPass } = require('../controllers/pass.controller');
 const { authenticate, requireUser, requireAdmin } = require('../middleware/auth');
-const { uploadBoth, handleUploadError } = require('../middleware/upload');
+const { uploadBoth, handleUploadError, processUploads } = require('../middleware/upload');
 const { applyRules, reviewRules, appIdParam, validate } = require('../middleware/validators');
 
 // ── PUBLIC ─────────────────────────────────────────────────────────────
@@ -27,6 +27,7 @@ router.post(
   '/',
   authenticate, requireUser,
   uploadBoth, handleUploadError,
+  processUploads,
   applyRules, validate,
   submitApplication
 );

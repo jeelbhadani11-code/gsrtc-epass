@@ -1,36 +1,11 @@
 const multer  = require('multer');
 const path    = require('path');
-const fs      = require('fs');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
-const UPLOAD_DIR     = process.env.UPLOAD_DIR
-  ? require('path').resolve(process.env.UPLOAD_DIR)
-  : (process.env.VERCEL ? '/tmp/uploads' : require('path').resolve(__dirname, '../../uploads'));
 const MAX_SIZE_BYTES = (parseInt(process.env.MAX_FILE_SIZE_MB) || 5) * 1024 * 1024;
 
-// Ensure upload directories exist
-['photos', 'documents'].forEach(dir => {
-  const p = path.join(UPLOAD_DIR, dir);
-  try {
-    if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
-  } catch (err) {
-    if (err.code !== 'EROFS') {
-      console.error(`Failed to create directory ${p}:`, err.message);
-    }
-  }
-});
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = file.fieldname === 'photo' ? 'photos' : 'documents';
-    cb(null, path.join(UPLOAD_DIR, dir));
-  },
-  filename: (req, file, cb) => {
-    const ext    = path.extname(file.originalname).toLowerCase();
-    const prefix = req.user?.id ? req.user.id.slice(0, 8) : 'anon';
-    const ts     = Date.now();
-    cb(null, `${prefix}_${ts}${ext}`);
-  },
-});
+// Use memory storage — no disk writes (required for Vercel serverless)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const allowed = {
@@ -65,10 +40,46 @@ const handleUploadError = (err, req, res, next) => {
   next();
 };
 
-// Get public URL path from disk path
+/**
+ * Upload files in req.files to Cloudinary and attach secure URLs to req.fileUrls
+ * Call this AFTER uploadBoth middleware.
+ */
+const processUploads = async (req, res, next) => {
+  try {
+    req.fileUrls = { photo: null, document: null };
+
+    const prefix = req.user?.id ? req.user.id.slice(0, 8) : 'anon';
+    const ts     = Date.now();
+
+    if (req.files?.photo?.[0]) {
+      const file = req.files.photo[0];
+      req.fileUrls.photo = await uploadToCloudinary(
+        file.buffer,
+        'gsrtc/photos',
+        `${prefix}_photo_${ts}`
+      );
+    }
+
+    if (req.files?.document?.[0]) {
+      const file = req.files.document[0];
+      req.fileUrls.document = await uploadToCloudinary(
+        file.buffer,
+        'gsrtc/documents',
+        `${prefix}_doc_${ts}`
+      );
+    }
+
+    next();
+  } catch (err) {
+    console.error('Cloudinary upload error:', err.message);
+    return res.status(500).json({ success: false, message: 'File upload to cloud failed. Please try again.' });
+  }
+};
+
+// Legacy helper kept for backward compat (no longer used for new uploads)
 const getFileUrl = (diskPath) => {
   if (!diskPath) return null;
   return '/uploads/' + diskPath.split('/uploads/')[1]?.replace(/\\/g, '/');
 };
 
-module.exports = { uploadPhoto, uploadDocument, uploadBoth, handleUploadError, getFileUrl };
+module.exports = { uploadPhoto, uploadDocument, uploadBoth, handleUploadError, processUploads, getFileUrl };
