@@ -2571,6 +2571,14 @@
       color: #f87171;
       cursor: default
     }
+    .act-docs {
+      background: rgba(99,102,241,.12);
+      color: #818cf8;
+    }
+    .act-docs:hover {
+      background: rgba(99,102,241,.25);
+      color: white;
+    }
 
     .act-confirm-yes {
       background: var(--success);
@@ -3518,6 +3526,7 @@
                     <th>Amount</th>
                     <th>Applied</th>
                     <th>Status</th>
+                    <th>Docs</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -4095,6 +4104,19 @@
         return;
       }
 
+      const photoFile = document.getElementById('ap-photo').files[0];
+      const documentFile = document.getElementById('ap-document').files[0];
+
+      if (!photoFile) {
+        document.getElementById('ap-photo').closest('.upload-box') && document.getElementById('ap-photo').closest('.upload-box').classList.add('upload-error');
+        showToast('⚠️ Photo Required', 'Please upload your applicant photo before submitting.', 'warn');
+        return;
+      }
+      if (!documentFile) {
+        showToast('⚠️ Document Required', 'Please upload a supporting document (ID/Certificate) before submitting.', 'warn');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('applicantName', name);
       formData.append('passType', passType);
@@ -4104,11 +4126,8 @@
       formData.append('fromCity', fromCity);
       formData.append('toCity', toCity);
       formData.append('validity', validity);
-
-      const photoFile = document.getElementById('ap-photo').files[0];
-      const documentFile = document.getElementById('ap-document').files[0];
-      if (photoFile) formData.append('photo', photoFile);
-      if (documentFile) formData.append('document', documentFile);
+      formData.append('photo', photoFile);
+      formData.append('document', documentFile);
 
       try {
         const response = await apiFetch('/applications', { method: 'POST', body: formData });
@@ -4557,7 +4576,7 @@
 
         const apps = data.data || [];
         if (!apps.length) {
-          tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No applications found.</td></tr>';
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No applications found.</td></tr>';
           return;
         }
 
@@ -4573,6 +4592,9 @@
           } else {
             actions = `<span style="font-size:.72rem;color:var(--gray-400)">${escapeHtml(status)}</span>`;
           }
+          const docsBtn = (app.photo_url || app.document_url)
+            ? `<button class="act-btn act-docs" onclick="viewDocs('${escapeHtml(app.id)}','${encodeURIComponent(app.photo_url||'')}','${encodeURIComponent(app.document_url||'')}','${escapeHtml(app.applicant_name)}')">📎 Docs</button>`
+            : `<span style="font-size:.68rem;color:var(--gray-400)">No docs</span>`;
           return `
         <tr>
           <td><code style="font-size:.72rem;color:#6366f1">${escapeHtml(app.id)}</code></td>
@@ -4583,6 +4605,7 @@
           <td>${formatAmount(app.amount)}</td>
           <td>${formatDate(app.submitted_at)}</td>
           <td>${adminBadge(status)}</td>
+          <td style="white-space:nowrap">${docsBtn}</td>
           <td style="white-space:nowrap">${actions}</td>
         </tr>
       `;
@@ -4916,9 +4939,59 @@
       loadConfig();
     }
 
+    // ── DOCUMENT VIEWER MODAL ─────────────────────────────────────────────
+    function viewDocs(appId, photoEncoded, docEncoded, applicantName) {
+      const photoUrl = decodeURIComponent(photoEncoded);
+      const docUrl   = decodeURIComponent(docEncoded);
+      const API_ROOT = API_BASE.replace('/api', '');
+
+      document.getElementById('docs-modal-name').textContent = applicantName + ' — ' + appId;
+
+      const makeCard = (label, url) => {
+        if (!url) return `<div style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);border-radius:12px;padding:1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.85rem">${label}<br><span style="font-size:.75rem">Not uploaded</span></div>`;
+        const fullUrl = url.startsWith('http') ? url : API_ROOT + url;
+        const isPdf   = url.toLowerCase().endsWith('.pdf');
+        const preview = isPdf
+          ? `<div style="text-align:center;padding:1.5rem;font-size:2rem">📄<br><span style="font-size:.8rem;color:rgba(255,255,255,.5)">PDF Document</span></div>`
+          : `<img src="${fullUrl}" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load</div>'">`;
+        return `
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden">
+            <div style="padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px">${label}</div>
+            ${preview}
+            <div style="padding:.8rem 1rem">
+              <a href="${fullUrl}" target="_blank" rel="noopener" style="display:block;text-align:center;background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.3);border-radius:8px;padding:.5rem;font-size:.78rem;text-decoration:none;font-weight:600">
+                🔗 Open Full View
+              </a>
+            </div>
+          </div>`;
+      };
+
+      document.getElementById('docs-modal-body').innerHTML =
+        makeCard('📸 Applicant Photo', photoUrl) +
+        makeCard('📋 Supporting Document', docUrl);
+
+      const modal = document.getElementById('docs-modal');
+      modal.style.display = 'flex';
+      modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    }
+
     init();
 
   </script>
+<!-- ── DOCUMENT VIEWER MODAL ─────────────────────────────────────── -->
+<div id="docs-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#1a2235;border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:860px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem;position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+      <div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px">Uploaded Documents</div>
+        <div id="docs-modal-name" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:white;margin-top:2px"></div>
+      </div>
+      <button onclick="document.getElementById('docs-modal').style.display='none'" style="background:rgba(255,255,255,.08);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div id="docs-modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem"></div>
+  </div>
+</div>
+
 </body>
 
 </html>

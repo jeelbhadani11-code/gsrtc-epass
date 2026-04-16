@@ -38,6 +38,10 @@ const submitApplication = async (req, res) => {
     const photoUrl    = req.files?.photo?.[0]    ? getFileUrl(req.files.photo[0].path)    : null;
     const documentUrl = req.files?.document?.[0] ? getFileUrl(req.files.document[0].path) : null;
 
+    // Both files are required
+    if (!photoUrl)    return error(res, 'Applicant photo is required. Please upload a photo (JPG/PNG/WebP).', 400);
+    if (!documentUrl) return error(res, 'Supporting document is required. Please upload a document (JPG/PNG/PDF).', 400);
+
     const result = await query(
       `INSERT INTO applications
         (id, user_id, applicant_name, pass_type, mobile, email, college_org,
