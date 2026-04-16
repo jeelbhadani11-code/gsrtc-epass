@@ -46,7 +46,7 @@ const isDevelopment = (process.env.NODE_ENV || 'development') !== 'production';
 app.use(cors({
   origin: (origin, callback) => {
     if (isDevelopment) return callback(null, true);
-    if (!origin || allowedOrigins.includes(origin) || origin === 'null') return callback(null, true);
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin === 'null') return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
