@@ -2930,6 +2930,8 @@
         grid-template-columns: 1fr
       }
     }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .spinner { display:inline-block; border:2px solid; border-radius:50%; border-top-color:transparent; width:14px; height:14px; animation:spin 1s linear infinite; vertical-align:middle; margin-right:6px; }
   </style>
 </head>
 
@@ -3319,12 +3321,14 @@
               </div>
               <div class="form-row" style="margin-top:.8rem">
                 <div class="form-group no-mb"><label>From City / Stop <span class="req">*</span></label>
-                  <div class="input-wrap"><span class="input-ico">📍</span><input type="text" id="ap-from"
-                      placeholder="e.g. Ahmedabad" oninput="filterName(this);updatePreview()"></div>
+                  <div class="select-wrap"><span class="input-ico" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);z-index:10;font-size:1.1rem">📍</span><select id="ap-from" style="padding-left:40px" onchange="updatePreview()">
+                      <option value="">Select City / Stop</option><option value="Ahmedabad">Ahmedabad</option><option value="Amreli">Amreli</option><option value="Anand">Anand</option><option value="Ankleshwar">Ankleshwar</option><option value="Bharuch">Bharuch</option><option value="Bhavnagar">Bhavnagar</option><option value="Bhuj">Bhuj</option><option value="Botad">Botad</option><option value="Dahod">Dahod</option><option value="Deesa">Deesa</option><option value="Gandhidham">Gandhidham</option><option value="Gandhinagar">Gandhinagar</option><option value="Godhra">Godhra</option><option value="Jamnagar">Jamnagar</option><option value="Jetpur">Jetpur</option><option value="Junagadh">Junagadh</option><option value="Kapadvanj">Kapadvanj</option><option value="Mehsana">Mehsana</option><option value="Morbi">Morbi</option><option value="Nadiad">Nadiad</option><option value="Navsari">Navsari</option><option value="Palanpur">Palanpur</option><option value="Patan">Patan</option><option value="Porbandar">Porbandar</option><option value="Rajkot">Rajkot</option><option value="Surat">Surat</option><option value="Surendranagar">Surendranagar</option><option value="Vadodara">Vadodara</option><option value="Valsad">Valsad</option><option value="Vapi">Vapi</option><option value="Vyara">Vyara</option><option value="Wadhwan">Wadhwan</option>
+                    </select></div>
                 </div>
                 <div class="form-group no-mb"><label>To City / Stop <span class="req">*</span></label>
-                  <div class="input-wrap"><span class="input-ico">🏁</span><input type="text" id="ap-to"
-                      placeholder="e.g. Gandhinagar" oninput="filterName(this);updatePreview()"></div>
+                  <div class="select-wrap"><span class="input-ico" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);z-index:10;font-size:1.1rem">🏁</span><select id="ap-to" style="padding-left:40px" onchange="updatePreview()">
+                      <option value="">Select City / Stop</option><option value="Ahmedabad">Ahmedabad</option><option value="Amreli">Amreli</option><option value="Anand">Anand</option><option value="Ankleshwar">Ankleshwar</option><option value="Bharuch">Bharuch</option><option value="Bhavnagar">Bhavnagar</option><option value="Bhuj">Bhuj</option><option value="Botad">Botad</option><option value="Dahod">Dahod</option><option value="Deesa">Deesa</option><option value="Gandhidham">Gandhidham</option><option value="Gandhinagar">Gandhinagar</option><option value="Godhra">Godhra</option><option value="Jamnagar">Jamnagar</option><option value="Jetpur">Jetpur</option><option value="Junagadh">Junagadh</option><option value="Kapadvanj">Kapadvanj</option><option value="Mehsana">Mehsana</option><option value="Morbi">Morbi</option><option value="Nadiad">Nadiad</option><option value="Navsari">Navsari</option><option value="Palanpur">Palanpur</option><option value="Patan">Patan</option><option value="Porbandar">Porbandar</option><option value="Rajkot">Rajkot</option><option value="Surat">Surat</option><option value="Surendranagar">Surendranagar</option><option value="Vadodara">Vadodara</option><option value="Valsad">Valsad</option><option value="Vapi">Vapi</option><option value="Vyara">Vyara</option><option value="Wadhwan">Wadhwan</option>
+                    </select></div>
                 </div>
               </div>
               <div class="form-row" style="margin-top:.8rem">
@@ -3361,7 +3365,7 @@
                 <input type="file" id="ap-photo" accept=".jpg,.jpeg,.png,.webp" style="display:none">
               </div>
               <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap">
-                <button class="btn btn-primary" onclick="handleApply()">📨 Submit Application &amp; Pay</button>
+                <button id="btn-apply" class="btn btn-primary" onclick="handleApply()">📨 Submit Application &amp; Pay</button>
                 <button class="btn btn-outline" onclick="clearApplyForm()">🗑 Clear Form</button>
               </div>
             </div>
@@ -4139,6 +4143,13 @@
       formData.append('photo', photoFile);
       formData.append('document', documentFile);
 
+      const btnApply = document.getElementById('btn-apply');
+      const originalText = btnApply ? btnApply.innerHTML : '📨 Submit Application &amp; Pay';
+      if (btnApply) {
+        btnApply.disabled = true;
+        btnApply.innerHTML = '<span class="spinner"></span> <span>Submitting...</span>';
+      }
+
       try {
         const response = await apiFetch('/applications', { method: 'POST', body: formData });
         const data = await safeJson(response);
@@ -4156,6 +4167,11 @@
         }, 700);
       } catch {
         showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+      } finally {
+        if (btnApply) {
+          btnApply.disabled = false;
+          btnApply.innerHTML = originalText;
+        }
       }
     }
 
@@ -4990,11 +5006,18 @@
 
       const makeCard = (label, url) => {
         if (!url) return `<div style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);border-radius:12px;padding:1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.85rem">${label}<br><span style="font-size:.75rem">Not uploaded</span></div>`;
-        const fullUrl = url.startsWith('http') ? url : API_ROOT + url;
+        let fullUrl = url.startsWith('http') ? url : API_ROOT + url;
+        let previewSrc = fullUrl;
+        
+        if (fullUrl.includes('res.cloudinary.com')) {
+          fullUrl = fullUrl.replace('/upload/', '/upload/q_auto,f_auto/');
+          previewSrc = previewSrc.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+        }
+
         const isPdf   = url.toLowerCase().endsWith('.pdf');
         const preview = isPdf
           ? `<div style="text-align:center;padding:1.5rem;font-size:2rem">📄<br><span style="font-size:.8rem;color:rgba(255,255,255,.5)">PDF Document</span></div>`
-          : `<img src="${fullUrl}" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load</div>'">`;
+          : `<img src="${previewSrc}" style="width:100%;border-radius:8px;display:block;max-height:280px;object-fit:contain;background:#0d1527" alt="${label}" onerror="this.outerHTML='<div style=\\'padding:1rem;color:#f87171;font-size:.8rem\\'>Image failed to load</div>'">`;
         return `
           <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden">
             <div style="padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);font-size:.72rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px">${label}</div>
