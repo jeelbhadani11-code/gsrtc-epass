@@ -2566,6 +2566,12 @@
       cursor: default
     }
 
+    .act-rejected {
+      background: rgba(239, 68, 68, .1);
+      color: #f87171;
+      cursor: default
+    }
+
     .act-confirm-yes {
       background: var(--success);
       color: white;
@@ -4557,9 +4563,15 @@
 
         tbody.innerHTML = apps.map((app) => {
           const status = app.status;
-          let actions = '<button class="act-btn act-issued">✓ Issued</button>';
+          let actions;
           if (status === 'Pending') {
             actions = `<span id="action-${escapeHtml(app.id)}"><button class="act-btn act-approve" onclick="confirmApprove('${escapeHtml(app.id)}', this)">✅ Approve</button> <button class="act-btn act-reject" onclick="confirmReject('${escapeHtml(app.id)}', this)">❌ Reject</button></span>`;
+          } else if (status === 'Approved') {
+            actions = '<button class="act-btn act-issued" disabled>✓ Issued</button>';
+          } else if (status === 'Rejected') {
+            actions = '<button class="act-btn act-rejected" disabled>✕ Rejected</button>';
+          } else {
+            actions = `<span style="font-size:.72rem;color:var(--gray-400)">${escapeHtml(status)}</span>`;
           }
           return `
         <tr>
