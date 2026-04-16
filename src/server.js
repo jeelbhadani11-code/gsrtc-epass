@@ -64,7 +64,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // ── STATIC FILES (uploaded photos/docs) ───────────────────────────────
-const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
+const UPLOAD_DIR = process.env.UPLOAD_DIR || (process.env.VERCEL ? '/tmp/uploads' : './uploads');
 app.use('/uploads', express.static(path.resolve(UPLOAD_DIR)));
 app.use(express.static(PUBLIC_DIR));
 
@@ -183,15 +183,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ── START ──────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚌  GSRTC E-Pass Backend`);
-  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  console.log(`🌐  Server   : http://localhost:${PORT}`);
-  console.log(`📋  API Docs : http://localhost:${PORT}/api`);
-  console.log(`❤️   Health   : http://localhost:${PORT}/health`);
-  console.log(`🔧  Mode     : ${process.env.NODE_ENV || 'development'}`);
-  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🚌  GSRTC E-Pass Backend`);
+    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`🌐  Server   : http://localhost:${PORT}`);
+    console.log(`📋  API Docs : http://localhost:${PORT}/api`);
+    console.log(`❤️   Health   : http://localhost:${PORT}/health`);
+    console.log(`🔧  Mode     : ${process.env.NODE_ENV || 'development'}`);
+    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+  });
+}
 
 module.exports = app;

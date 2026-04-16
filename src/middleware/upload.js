@@ -4,13 +4,19 @@ const fs      = require('fs');
 
 const UPLOAD_DIR     = process.env.UPLOAD_DIR
   ? require('path').resolve(process.env.UPLOAD_DIR)
-  : require('path').resolve(__dirname, '../../uploads');
+  : (process.env.VERCEL ? '/tmp/uploads' : require('path').resolve(__dirname, '../../uploads'));
 const MAX_SIZE_BYTES = (parseInt(process.env.MAX_FILE_SIZE_MB) || 5) * 1024 * 1024;
 
 // Ensure upload directories exist
 ['photos', 'documents'].forEach(dir => {
   const p = path.join(UPLOAD_DIR, dir);
-  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+  try {
+    if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+  } catch (err) {
+    if (err.code !== 'EROFS') {
+      console.error(`Failed to create directory ${p}:`, err.message);
+    }
+  }
 });
 
 const storage = multer.diskStorage({
