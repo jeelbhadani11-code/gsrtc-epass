@@ -8,7 +8,6 @@ const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
  * GET /api/passes/:appId/download
  */
 const downloadPass = async (req, res) => {
-  let browser;
   try {
     const { appId } = req.params;
 
@@ -33,44 +32,21 @@ const downloadPass = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Pass is not approved yet' });
     }
 
-    const html = buildPassHTML(app);
-
-    // Try to use Puppeteer for PDF, fallback to HTML if not available
+    // Generate PDF using pdf-lib (works in serverless environments)
     try {
-      const puppeteer = require('puppeteer');
-      browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      const pdf = await page.pdf({
-        format: 'A5',
-        printBackground: true,
-        margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' },
-      });
-
+      const pdf = await buildPassPdf(app);
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="GSRTC-EPass-${appId}.pdf"`);
-      return res.send(pdf);
-    } catch (puppeteerErr) {
-      console.warn('⚠️  Puppeteer not available, generating PDF fallback:', puppeteerErr.message);
-      try {
-        const pdf = await buildPassPdf(app);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="GSRTC-EPass-${appId}.pdf"`);
-        return res.send(Buffer.from(pdf));
-      } catch (pdfErr) {
-        console.warn('⚠️  PDF fallback failed, serving HTML pass:', pdfErr.message);
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Content-Disposition', `inline; filename="GSRTC-EPass-${appId}.html"`);
-        return res.send(html);
-      }
+      return res.send(Buffer.from(pdf));
+    } catch (pdfErr) {
+      console.warn('⚠️  PDF generation failed, serving HTML pass:', pdfErr.message);
+      const html = buildPassHTML(app);
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Content-Disposition', `inline; filename="GSRTC-EPass-${appId}.html"`);
+      return res.send(html);
     }
   } catch (err) {
     return serverError(res, err, 'downloadPass');
-  } finally {
-    if (browser) await browser.close().catch(() => {});
   }
 };
 
