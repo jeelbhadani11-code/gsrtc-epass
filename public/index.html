@@ -3314,7 +3314,7 @@
                   <div class="input-wrap"><span class="input-ico">📱</span><input type="tel" id="ap-mobile"
                       placeholder="10-digit number" oninput="filterMobile(this)" maxlength="10"></div>
                 </div>
-                <div class="form-group no-mb" id="group-college" style="display:none;"><label>College / Organization <span class="req">*</span></label>
+                <div class="form-group no-mb" id="group-college"><label>College / Organization <span class="req" id="req-college" style="display:none">*</span></label>
                   <div class="select-wrap">
                     <span class="input-ico" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);z-index:10;font-size:1.1rem">🏫</span>
                     <select id="ap-college-sel" style="padding-left:40px" onchange="handleCollegeChange();updatePreview()">
@@ -3356,7 +3356,7 @@
                       <option value="Annual">Annual — ₹1800</option>
                     </select></div>
                 </div>
-                <div class="form-group no-mb" id="group-email" style="display:none;"><label>Email Address <span class="req">*</span></label>
+                <div class="form-group no-mb" id="group-email"><label>Email Address <span class="req" id="req-email" style="display:none">*</span></label>
                   <div class="input-wrap"><span class="input-ico">✉️</span><input type="email" id="ap-email"
                       placeholder="name@example.com" oninput="lowercaseEmail(this)"></div>
                 </div>
@@ -4148,16 +4148,25 @@
 
       const formData = new FormData();
       let finalCollege = '';
-      if (document.getElementById('group-college').style.display !== 'none') {
-        const sel = document.getElementById('ap-college-sel').value;
-        if (sel === 'Other') {
-          finalCollege = document.getElementById('ap-college-other').value.trim();
-        } else {
-          finalCollege = sel;
-        }
+      const sel = document.getElementById('ap-college-sel').value;
+      if (sel === 'Other') {
+        finalCollege = document.getElementById('ap-college-other').value.trim();
+      } else {
+        finalCollege = sel;
       }
 
-      const email = document.getElementById('group-email').style.display !== 'none' ? document.getElementById('ap-email').value.trim() : '';
+      const email = document.getElementById('ap-email').value.trim();
+
+      if (passType === 'Student Concession') {
+        if (!finalCollege || finalCollege.length < 2) {
+          showToast('⚠️ College Required', 'Please select or enter your college.', 'warn');
+          return;
+        }
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+          showToast('⚠️ Email Required', 'Please enter a valid email for Student Pass.', 'warn');
+          return;
+        }
+      }
 
       formData.append('applicantName', name);
       formData.append('passType', passType);
@@ -4212,14 +4221,21 @@
       document.getElementById('ap-document').value = '';
       document.getElementById('ap-doc-name').textContent = 'No document selected';
       
-      const grpCol = document.getElementById('group-college');
-      if (grpCol) grpCol.style.display = 'none';
       const grpColOther = document.getElementById('ap-college-other-wrap');
       if (grpColOther) grpColOther.style.display = 'none';
-      const grpEmail = document.getElementById('group-email');
-      if (grpEmail) grpEmail.style.display = 'none';
+      const reqCol = document.getElementById('req-college');
+      if (reqCol) reqCol.style.display = 'none';
+      const reqEmail = document.getElementById('req-email');
+      if (reqEmail) reqEmail.style.display = 'none';
       
       updatePreview();
+    }
+
+    function handlePassTypeChange() {
+      const type = document.getElementById('ap-type').value;
+      const isStudent = (type === 'Student Concession');
+      document.getElementById('req-college').style.display = isStudent ? 'inline' : 'none';
+      document.getElementById('req-email').style.display = isStudent ? 'inline' : 'none';
     }
     async function renderMyApps() {
       const user = DB.getCurrentUser();
@@ -4436,7 +4452,8 @@
       const type = getValue('ap-type');
       const from = getValue('ap-from').trim();
       const to = getValue('ap-to').trim();
-      const college = getValue('ap-college').trim();
+      const sel = getValue('ap-college-sel');
+      const college = (sel === 'Other') ? getValue('ap-college-other').trim() : sel;
       const validity = getValue('ap-validity');
       const element = (id) => document.getElementById(id);
 
