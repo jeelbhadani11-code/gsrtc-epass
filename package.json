@@ -22,11 +22,11 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.0-rc.4",
     "nodemailer": "^6.9.7",
     "pdf-lib": "^1.17.1",
     "pg": "^8.11.3",
-    "puppeteer": "^21.6.1",
+    "puppeteer": "latest",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
