@@ -2580,6 +2580,15 @@
       color: white;
     }
 
+    .act-delete {
+      background: rgba(239,68,68,.08);
+      color: #f87171;
+    }
+    .act-delete:hover {
+      background: rgba(239,68,68,.9);
+      color: white;
+    }
+
     .act-confirm-yes {
       background: var(--success);
       color: white;
@@ -3528,6 +3537,7 @@
                     <th>Status</th>
                     <th>Docs</th>
                     <th>Action</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody id="apps-tbody"></tbody>
@@ -4596,7 +4606,7 @@
             ? `<button class="act-btn act-docs" onclick="viewDocs('${escapeHtml(app.id)}','${encodeURIComponent(app.photo_url||'')}','${encodeURIComponent(app.document_url||'')}','${escapeHtml(app.applicant_name)}')">📎 Docs</button>`
             : `<span style="font-size:.68rem;color:var(--gray-400)">No docs</span>`;
           return `
-        <tr>
+        <tr id="app-row-${escapeHtml(app.id)}">
           <td><code style="font-size:.72rem;color:#6366f1">${escapeHtml(app.id)}</code></td>
           <td><div style="font-weight:600">${escapeHtml(app.applicant_name)}</div><div style="font-size:.72rem;color:var(--gray-400)">${escapeHtml(app.mobile)}</div></td>
           <td>${escapeHtml(app.pass_type)}</td>
@@ -4607,11 +4617,12 @@
           <td>${adminBadge(status)}</td>
           <td style="white-space:nowrap">${docsBtn}</td>
           <td style="white-space:nowrap">${actions}</td>
+          <td><button class="act-btn act-delete" onclick="confirmDeleteApp('${escapeHtml(app.id)}', this)" title="Delete application">🗑 Delete</button></td>
         </tr>
       `;
         }).join('');
       } catch {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="9" style="color:#f87171">Failed to load applications. Is the backend running?</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="11" style="color:#f87171">Failed to load applications. Is the backend running?</td></tr>';
       }
     }
 
@@ -4937,6 +4948,36 @@
       }
       wireFileInputs();
       loadConfig();
+    }
+
+    // ── DELETE APPLICATION (Admin) ─────────────────────────────────────────
+    function confirmDeleteApp(id, btn) {
+      const original = btn.outerHTML;
+      btn.outerHTML = `<span style="display:flex;gap:4px;align-items:center" id="del-confirm-${id}">
+        <span style="font-size:.68rem;color:#f87171;font-weight:600">Delete?</span>
+        <button class="act-btn act-delete" style="background:rgba(239,68,68,.9);color:white" onclick="executeDeleteApp('${id}')">✓ Yes</button>
+        <button class="act-btn act-confirm-no" onclick="document.getElementById('del-confirm-${id}').outerHTML='<button class=\\'act-btn act-delete\\' onclick=\\'confirmDeleteApp(\\\\&quot;${id}\\\\&quot;, this)\\'>🗑 Delete</button>'">✖ No</button>
+      </span>`;
+    }
+
+    async function executeDeleteApp(id) {
+      const row = document.getElementById(`app-row-${id}`);
+      if (row) row.style.opacity = '.4';
+      try {
+        const response = await apiFetch(`/applications/admin/${encodeURIComponent(id)}`, { method: 'DELETE' }, true);
+        const data = await safeJson(response);
+        if (!response.ok) {
+          showToast('❌ Error', data.message || 'Could not delete application.', 'error');
+          if (row) row.style.opacity = '1';
+          return;
+        }
+        if (row) row.remove();
+        await renderAdminStats();
+        showToast('🗑 Deleted', `Application ${id} deleted successfully.`, 'success');
+      } catch {
+        showToast('❌ Network Error', 'Could not reach the backend.', 'error');
+        if (row) row.style.opacity = '1';
+      }
     }
 
     // ── DOCUMENT VIEWER MODAL ─────────────────────────────────────────────

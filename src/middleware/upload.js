@@ -51,23 +51,21 @@ const processUploads = async (req, res, next) => {
     const prefix = req.user?.id ? req.user.id.slice(0, 8) : 'anon';
     const ts     = Date.now();
 
-    if (req.files?.photo?.[0]) {
-      const file = req.files.photo[0];
-      req.fileUrls.photo = await uploadToCloudinary(
-        file.buffer,
-        'gsrtc/photos',
-        `${prefix}_photo_${ts}`
-      );
-    }
+    const photoFile    = req.files?.photo?.[0]    || null;
+    const documentFile = req.files?.document?.[0] || null;
 
-    if (req.files?.document?.[0]) {
-      const file = req.files.document[0];
-      req.fileUrls.document = await uploadToCloudinary(
-        file.buffer,
-        'gsrtc/documents',
-        `${prefix}_doc_${ts}`
-      );
-    }
+    // Upload both files in PARALLEL — cuts wait time in half
+    const [photoUrl, documentUrl] = await Promise.all([
+      photoFile
+        ? uploadToCloudinary(photoFile.buffer, 'gsrtc/photos', `${prefix}_photo_${ts}`)
+        : Promise.resolve(null),
+      documentFile
+        ? uploadToCloudinary(documentFile.buffer, 'gsrtc/documents', `${prefix}_doc_${ts}`)
+        : Promise.resolve(null),
+    ]);
+
+    req.fileUrls.photo    = photoUrl;
+    req.fileUrls.document = documentUrl;
 
     next();
   } catch (err) {

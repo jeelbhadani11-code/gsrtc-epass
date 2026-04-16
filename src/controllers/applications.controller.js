@@ -393,6 +393,22 @@ const processPayment = async (req, res) => {
   }
 };
 
+// ── DELETE APPLICATION (Admin) ────────────────────────────────────────
+const deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appRes = await query('SELECT id FROM applications WHERE id = $1', [id]);
+    if (!appRes.rows.length) return notFound(res, 'Application not found');
+
+    await query('DELETE FROM applications WHERE id = $1', [id]);
+    await logAudit('admin', req.user.id, 'DELETE_APPLICATION', 'application', id, null, req.ip);
+
+    return success(res, { id }, 'Application deleted successfully');
+  } catch (err) {
+    return serverError(res, err, 'deleteApplication');
+  }
+};
+
 module.exports = {
   submitApplication,
   getMyApplications,
@@ -405,4 +421,5 @@ module.exports = {
   adminGetUsers,
   toggleUserActive,
   processPayment,
+  deleteApplication,
 };

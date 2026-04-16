@@ -11,6 +11,7 @@ const {
   adminGetUsers,
   toggleUserActive,
   processPayment,
+  deleteApplication,
 } = require('../controllers/applications.controller');
 const { downloadPass } = require('../controllers/pass.controller');
 const { authenticate, requireUser, requireAdmin } = require('../middleware/auth');
@@ -60,5 +61,8 @@ router.patch('/admin/users/:userId/toggle', authenticate, requireAdmin, toggleUs
 
 // Admin: review (approve / reject) an application
 router.patch('/admin/:id/review', authenticate, requireAdmin, reviewRules, validate, reviewApplication);
+
+// Admin: delete an application
+router.delete('/admin/:id', authenticate, requireAdmin, deleteApplication);
 
 module.exports = router;
