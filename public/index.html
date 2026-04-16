@@ -3300,7 +3300,7 @@
                     letters &amp; spaces allowed.</span>
                 </div>
                 <div class="form-group no-mb"><label>Pass Type <span class="req">*</span></label>
-                  <div class="select-wrap"><select id="ap-type" class="no-ico" onchange="updatePreview()">
+                  <div class="select-wrap"><select id="ap-type" class="no-ico" onchange="handlePassTypeChange();updatePreview()">
                       <option value="">Select Pass Type</option>
                       <option value="Student Concession">Student Concession Pass</option>
                       <option value="Employee Monthly">Employee Monthly Pass</option>
@@ -3314,9 +3314,24 @@
                   <div class="input-wrap"><span class="input-ico">📱</span><input type="tel" id="ap-mobile"
                       placeholder="10-digit number" oninput="filterMobile(this)" maxlength="10"></div>
                 </div>
-                <div class="form-group no-mb"><label>College / Organization</label>
-                  <div class="input-wrap"><span class="input-ico">🏫</span><input type="text" id="ap-college"
-                      placeholder="Institute or employer" oninput="filterName(this);updatePreview()"></div>
+                <div class="form-group no-mb" id="group-college" style="display:none;"><label>College / Organization <span class="req">*</span></label>
+                  <div class="select-wrap">
+                    <span class="input-ico" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);z-index:10;font-size:1.1rem">🏫</span>
+                    <select id="ap-college-sel" style="padding-left:40px" onchange="handleCollegeChange();updatePreview()">
+                      <option value="">Select College</option>
+                      <option value="LD College of Engineering">LD College of Engineering</option>
+                      <option value="Gujarat University">Gujarat University</option>
+                      <option value="Nirma University">Nirma University</option>
+                      <option value="DDU Nadiad">DDU Nadiad</option>
+                      <option value="LJ Institute">LJ Institute</option>
+                      <option value="SVNIT Surat">SVNIT Surat</option>
+                      <option value="MS University Vadodara">MS University Vadodara</option>
+                      <option value="Other">Other...</option>
+                    </select>
+                  </div>
+                  <div class="input-wrap" id="ap-college-other-wrap" style="display:none;margin-top:8px">
+                    <span class="input-ico">🏫</span><input type="text" id="ap-college-other" placeholder="Enter college name" oninput="filterName(this);updatePreview()">
+                  </div>
                 </div>
               </div>
               <div class="form-row" style="margin-top:.8rem">
@@ -3341,7 +3356,7 @@
                       <option value="Annual">Annual — ₹1800</option>
                     </select></div>
                 </div>
-                <div class="form-group no-mb"><label>Email Address</label>
+                <div class="form-group no-mb" id="group-email" style="display:none;"><label>Email Address <span class="req">*</span></label>
                   <div class="input-wrap"><span class="input-ico">✉️</span><input type="email" id="ap-email"
                       placeholder="name@example.com" oninput="lowercaseEmail(this)"></div>
                 </div>
@@ -4132,11 +4147,23 @@
       }
 
       const formData = new FormData();
+      let finalCollege = '';
+      if (document.getElementById('group-college').style.display !== 'none') {
+        const sel = document.getElementById('ap-college-sel').value;
+        if (sel === 'Other') {
+          finalCollege = document.getElementById('ap-college-other').value.trim();
+        } else {
+          finalCollege = sel;
+        }
+      }
+
+      const email = document.getElementById('group-email').style.display !== 'none' ? document.getElementById('ap-email').value.trim() : '';
+
       formData.append('applicantName', name);
       formData.append('passType', passType);
       formData.append('mobile', mobile);
-      formData.append('email', document.getElementById('ap-email').value.trim());
-      formData.append('collegeOrg', document.getElementById('ap-college').value.trim());
+      formData.append('email', email);
+      formData.append('collegeOrg', finalCollege);
       formData.append('fromCity', fromCity);
       formData.append('toCity', toCity);
       formData.append('validity', validity);
@@ -4176,21 +4203,24 @@
     }
 
     function clearApplyForm() {
-      ['ap-name', 'ap-mobile', 'ap-from', 'ap-to', 'ap-email', 'ap-college'].forEach((id) => {
+      ['ap-name', 'ap-mobile', 'ap-from', 'ap-to', 'ap-email', 'ap-college-sel', 'ap-college-other', 'ap-validity', 'ap-type'].forEach((id) => {
         const input = document.getElementById(id);
-        input.value = '';
-        input.classList.remove('valid', 'error');
+        if (input) input.value = '';
       });
-      document.getElementById('ap-type').value = '';
-      document.getElementById('ap-validity').value = '';
       document.getElementById('ap-photo').value = '';
-      document.getElementById('ap-document').value = '';
       document.getElementById('ap-photo-name').textContent = 'No photo selected';
-      document.getElementById('ap-document-name').textContent = 'No document selected';
-      refreshValidityLabels();
+      document.getElementById('ap-document').value = '';
+      document.getElementById('ap-doc-name').textContent = 'No document selected';
+      
+      const grpCol = document.getElementById('group-college');
+      if (grpCol) grpCol.style.display = 'none';
+      const grpColOther = document.getElementById('ap-college-other-wrap');
+      if (grpColOther) grpColOther.style.display = 'none';
+      const grpEmail = document.getElementById('group-email');
+      if (grpEmail) grpEmail.style.display = 'none';
+      
       updatePreview();
     }
-
     async function renderMyApps() {
       const user = DB.getCurrentUser();
       if (!user) return;
@@ -5006,13 +5036,8 @@
 
       const makeCard = (label, url) => {
         if (!url) return `<div style="background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);border-radius:12px;padding:1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.85rem">${label}<br><span style="font-size:.75rem">Not uploaded</span></div>`;
-        let fullUrl = url.startsWith('http') ? url : API_ROOT + url;
-        let previewSrc = fullUrl;
-        
-        if (fullUrl.includes('res.cloudinary.com')) {
-          fullUrl = fullUrl.replace('/upload/', '/upload/q_auto,f_auto/');
-          previewSrc = previewSrc.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
-        }
+        const fullUrl = url.startsWith('http') ? url : API_ROOT + url;
+        const previewSrc = fullUrl;
 
         const isPdf   = url.toLowerCase().endsWith('.pdf');
         const preview = isPdf
